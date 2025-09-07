@@ -255,6 +255,45 @@ function MiningPoolPieChart() {
 function MeshNetwork() {
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
+      {/* Continents overlaid on mesh network */}
+      <group position={[0, 0.5, 0]}>
+        {/* North America */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-35, 0, -20]}>
+          <planeGeometry args={[15, 20]} />
+          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
+        </mesh>
+        
+        {/* South America */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-25, 0, 5]}>
+          <planeGeometry args={[8, 18]} />
+          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
+        </mesh>
+        
+        {/* Africa */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[5, 0, 0]}>
+          <planeGeometry args={[12, 25]} />
+          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
+        </mesh>
+        
+        {/* Europe */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[8, 0, -25]}>
+          <planeGeometry args={[10, 8]} />
+          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
+        </mesh>
+        
+        {/* Asia */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[35, 0, -15]}>
+          <planeGeometry args={[25, 20]} />
+          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
+        </mesh>
+        
+        {/* Australia */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[40, 0, 18]}>
+          <planeGeometry args={[10, 6]} />
+          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+      
       {/* Create a simple mesh network grid */}
       {(() => {
         const lines = [];
