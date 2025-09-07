@@ -253,14 +253,16 @@ function MiningPoolPieChart() {
 }
 
 function MeshNetwork() {
-  const txLineRef = useRef<THREE.Mesh>(null)
+  const txLineRef = useRef<any>(null)
   
   // Animate the transaction line
   useFrame((state) => {
     if (txLineRef.current) {
-      // Pulse the transaction line
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.2
-      txLineRef.current.scale.set(scale, scale, 1)
+      // Pulse the transaction line opacity
+      const opacity = 0.5 + Math.sin(state.clock.elapsedTime * 3) * 0.5
+      if (txLineRef.current.material) {
+        txLineRef.current.material.opacity = opacity
+      }
     }
   })
   
@@ -285,6 +287,7 @@ function MeshNetwork() {
         color="#00ff00"
         lineWidth={3}
         dashed={false}
+        transparent={true}
       />
       
       {/* Create a simple mesh network grid */}
