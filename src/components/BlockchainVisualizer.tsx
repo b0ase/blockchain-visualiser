@@ -593,7 +593,7 @@ function BlockchainBlocks({ viewMode }: { viewMode: string }) {
             anchorY="middle"
             rotation={[0, 0, 0]}  // Keep text facing forward
           >
-            {viewMode === 'multi' ? '1MB BLOCKS' : '250MB BLOCKS'}
+            {viewMode === 'multi' ? '1MB BLOCKS' : 'Variable Blocksize'}
           </Text>
         );
       })()}
