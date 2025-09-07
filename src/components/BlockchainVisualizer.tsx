@@ -3,7 +3,7 @@
 
 import React, { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Text } from '@react-three/drei'
+import { OrbitControls, Text, Line } from '@react-three/drei'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsType } from 'three-stdlib'
 
@@ -251,6 +251,133 @@ function MiningPoolPieChart() {
   )
 }
 
+function MeshNetwork() {
+  return (
+    <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
+      {/* Create a simple mesh network grid */}
+      {(() => {
+        const lines = [];
+        const nodes = [];
+        const gridSize = 25; // Larger grid
+        const spacing = 5; // Larger spacing
+        const extent = (gridSize - 1) * spacing / 2; // Half the total grid size
+        
+        // Create horizontal lines
+        for (let i = 0; i < gridSize; i++) {
+          const z = -extent + i * spacing;
+          const points = [];
+          for (let j = 0; j < gridSize; j++) {
+            const x = -extent + j * spacing;
+            points.push(new THREE.Vector3(x, 0, z));
+          }
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          lines.push(
+            <line key={`h-line-${i}`}>
+              <primitive object={geometry} />
+              <lineBasicMaterial color="#000000" opacity={0.8} transparent />
+            </line>
+          );
+        }
+        
+        // Create vertical lines
+        for (let i = 0; i < gridSize; i++) {
+          const x = -extent + i * spacing;
+          const points = [];
+          for (let j = 0; j < gridSize; j++) {
+            const z = -extent + j * spacing;
+            points.push(new THREE.Vector3(x, 0, z));
+          }
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          lines.push(
+            <line key={`v-line-${i}`}>
+              <primitive object={geometry} />
+              <lineBasicMaterial color="#000000" opacity={0.8} transparent />
+            </line>
+          );
+        }
+        
+        // Create nodes at intersections
+        for (let i = 0; i < gridSize; i++) {
+          for (let j = 0; j < gridSize; j++) {
+            const x = -extent + i * spacing;
+            const z = -extent + j * spacing;
+            nodes.push(
+              <mesh key={`node-${i}-${j}`} position={[x, 0, z]}>
+                <sphereGeometry args={[0.2, 8, 8]} />
+                <meshBasicMaterial color="#000000" />
+              </mesh>
+            );
+          }
+        }
+        
+        return [...lines, ...nodes];
+      })()}
+    </group>
+  );
+}
+
+function MultiChainBlocks() {
+  return (
+    <group>
+      {/* 50 mini chains starting from center and splaying outward */}
+      {(() => {
+        const chains = [];
+        const numChains = 50;
+        const blockSize = 0.6; // Bigger block size for visibility
+        const blocksPerChain = 30; // Reduced back to shorter chains
+        const gap = 0.3; // Slightly bigger gap for more spread
+        
+        for (let chainIndex = 0; chainIndex < numChains; chainIndex++) {
+          // Each chain starts at center and goes outward at an angle
+          const angle = (chainIndex / numChains) * Math.PI * 2;
+          const baseY = -23; // Start just above pie chart
+          
+          // Create a chain of blocks going outward and upward from center
+          const chain = [];
+          for (let blockIndex = 0; blockIndex < blocksPerChain; blockIndex++) {
+            // Start from center (0,0) and move outward - faster spread
+            const distance = blockIndex * (blockSize + gap) * 1.5; // 1.5x multiplier for wider spread
+            const x = Math.cos(angle) * distance;
+            const z = Math.sin(angle) * distance;
+            const y = baseY + (blockIndex * 0.8); // Much steeper upward angle
+            
+            // Color based on distance from center - rainbow gradient
+            const colorProgress = blockIndex / (blocksPerChain - 1);
+            
+            chain.push(
+              <group key={`block-${blockIndex}`}>
+                <mesh position={[x, y, z]}>
+                  <boxGeometry args={[blockSize, blockSize, blockSize]} />
+                  <meshBasicMaterial
+                    color={`hsl(${240 - (colorProgress * 240)}, 100%, 60%)`}
+                  />
+                </mesh>
+                {/* Glow effect */}
+                <mesh position={[x, y, z]}>
+                  <boxGeometry args={[blockSize * 1.1, blockSize * 1.1, blockSize * 1.1]} />
+                  <meshBasicMaterial
+                    color={`hsl(${240 - (colorProgress * 240)}, 100%, 70%)`}
+                    transparent
+                    opacity={0.3}
+                  />
+                </mesh>
+              </group>
+            );
+          }
+          
+          chains.push(
+            <group key={`chain-${chainIndex}`}>
+              {chain}
+            </group>
+          );
+        }
+        
+        return chains;
+      })()}
+    </group>
+  );
+}
+
 function BlockchainBlocks() {
   return (
     <group>
@@ -408,6 +535,7 @@ function BlockchainBlocks() {
 
 export default function BlockchainVisualizer() {
   const controlsRef = useRef<OrbitControlsType | null>(null)
+  const [viewMode, setViewMode] = React.useState<'single' | 'multi' | 'play'>('single')
 
   const resetView = () => {
     if (controlsRef.current) {
@@ -429,7 +557,14 @@ export default function BlockchainVisualizer() {
         }}
       >
         <MiningPoolPieChart />
-        <BlockchainBlocks />
+        {viewMode === 'single' && <BlockchainBlocks />}
+        {viewMode === 'multi' && <MultiChainBlocks />}
+        {viewMode === 'play' && (
+          <>
+            <BlockchainBlocks />
+            <MeshNetwork />
+          </>
+        )}
         <OrbitControls
           ref={controlsRef}
           enableDamping
@@ -594,6 +729,43 @@ export default function BlockchainVisualizer() {
           </div>
         </div>
 
+      </div>
+
+      {/* View Mode Toggle - Top Center */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/90 backdrop-blur-md p-2 rounded-lg border border-[#00ff88]/30 flex gap-2">
+        <button
+          onClick={() => setViewMode('single')}
+          className={`px-3 py-2 rounded text-[#00ff88] font-mono text-xs border transition-all cursor-pointer ${
+            viewMode === 'single' 
+              ? 'bg-[#00ff88]/30 border-[#00ff88]/50' 
+              : 'border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50'
+          }`}
+          title="Bitcoin SV - Unbounded blocks"
+        >
+          ⛓️ BSV
+        </button>
+        <button
+          onClick={() => setViewMode('multi')}
+          className={`px-3 py-2 rounded text-[#00ff88] font-mono text-xs border transition-all cursor-pointer ${
+            viewMode === 'multi' 
+              ? 'bg-[#00ff88]/30 border-[#00ff88]/50' 
+              : 'border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50'
+          }`}
+          title="Bitcoin Core - Limited blocks"
+        >
+          🔗 BTC
+        </button>
+        <button
+          onClick={() => setViewMode('play')}
+          className={`px-3 py-2 rounded text-[#00ff88] font-mono text-xs border transition-all cursor-pointer ${
+            viewMode === 'play' 
+              ? 'bg-[#00ff88]/30 border-[#00ff88]/50' 
+              : 'border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50'
+          }`}
+          title="Interactive playground"
+        >
+          🎮 Play
+        </button>
       </div>
 
       {/* Reset Button - Bottom Right */}
