@@ -9,6 +9,7 @@ import * as THREE from 'three'
 
 function MiningPoolPieChart() {
   const chartRef = useRef<THREE.Group>(null!)
+  const mainGroupRef = useRef<THREE.Group>(null!)
 
   // BTC Mining Pool data - Rainbow gradient palette
   const miningPools = [
@@ -37,8 +38,13 @@ function MiningPoolPieChart() {
   ]
 
   useFrame((state) => {
+    // Gently rotate the entire visualization
+    if (mainGroupRef.current) {
+      mainGroupRef.current.rotation.y -= 0.002 // Slow continuous rotation (reversed)
+    }
+    
+    // Keep the subtle wobble on the pie chart
     if (chartRef.current) {
-      // Simple rotation only - no dynamic scaling
       chartRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.1
     }
   })
@@ -50,7 +56,7 @@ function MiningPoolPieChart() {
   ]
 
   return (
-    <group>
+    <group ref={mainGroupRef}>
       {/* Earth hemisphere underneath everything */}
       <group position={[0, -28, 0]}>
         {/* Outer atmosphere glow */}
@@ -78,72 +84,6 @@ function MiningPoolPieChart() {
           />
         </mesh>
         
-        {/* Continental landmasses - flat on the hemisphere surface */}
-        {/* North America */}
-        <mesh position={[-12, 0.2, 8]} rotation={[Math.PI/2, 0, 0]}>
-          <circleGeometry args={[7, 32]} />
-          <meshStandardMaterial 
-            color="#4A7C59"
-            emissive="#4A7C59"
-            emissiveIntensity={0.05}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        
-        {/* South America */}
-        <mesh position={[-10, 0.2, -8]} rotation={[Math.PI/2, 0, 0]}>
-          <circleGeometry args={[5, 32]} />
-          <meshStandardMaterial 
-            color="#4A7C59"
-            emissive="#4A7C59"
-            emissiveIntensity={0.05}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        
-        {/* Africa */}
-        <mesh position={[4, 0.2, -2]} rotation={[Math.PI/2, 0, 0]}>
-          <circleGeometry args={[6, 32]} />
-          <meshStandardMaterial 
-            color="#4A7C59"
-            emissive="#4A7C59"
-            emissiveIntensity={0.05}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        
-        {/* Europe */}
-        <mesh position={[2, 0.2, 10]} rotation={[Math.PI/2, 0, 0]}>
-          <circleGeometry args={[3, 32]} />
-          <meshStandardMaterial 
-            color="#4A7C59"
-            emissive="#4A7C59"
-            emissiveIntensity={0.05}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        
-        {/* Asia */}
-        <mesh position={[15, 0.2, 5]} rotation={[Math.PI/2, 0, 0]}>
-          <circleGeometry args={[9, 32]} />
-          <meshStandardMaterial 
-            color="#4A7C59"
-            emissive="#4A7C59"
-            emissiveIntensity={0.05}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-        
-        {/* Australia */}
-        <mesh position={[16, 0.2, -12]} rotation={[Math.PI/2, 0, 0]}>
-          <circleGeometry args={[4, 32]} />
-          <meshStandardMaterial 
-            color="#4A7C59"
-            emissive="#4A7C59"
-            emissiveIntensity={0.05}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
         
         {/* Inner core glow */}
         <mesh position={[0, 1, 0]}>
@@ -503,10 +443,10 @@ export default function BlockchainVisualizer() {
   }
 
   return (
-    <div className="w-full h-screen relative pl-96" style={{ background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)' }}>
+    <div className="w-full h-screen relative pl-96" style={{ background: 'linear-gradient(135deg, #000000 0%, #0a0a0a 100%)' }}>
 
       <Canvas
-        camera={{ position: [0, 500, 1500], fov: 55 }}
+        camera={{ position: [0, 10, 80], fov: 55 }}
         onCreated={({ gl }) => {
           // Ensure canvas doesn't capture keyboard events
           gl.domElement.tabIndex = -1;
