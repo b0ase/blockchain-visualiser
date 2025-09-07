@@ -579,7 +579,12 @@ export default function BlockchainVisualizer() {
       >
         <MiningPoolPieChart />
         {viewMode === 'single' && <BlockchainBlocks />}
-        {viewMode === 'multi' && <MultiChainBlocks />}
+        {viewMode === 'multi' && (
+          <>
+            <BlockchainBlocks />
+            <MultiChainBlocks />
+          </>
+        )}
         {viewMode === 'play' && (
           <>
             <BlockchainBlocks />
