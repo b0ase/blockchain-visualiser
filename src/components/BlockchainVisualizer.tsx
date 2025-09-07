@@ -127,26 +127,6 @@ function MiningPoolPieChart() {
           )
         })}
 
-        {/* Labels */}
-        {miningPools.map((pool, index) => {
-          const angle = ((pool.percentage / 2) + miningPools.slice(0, index).reduce((sum, p) => sum + p.percentage, 0)) / 100 * Math.PI * 2
-          const radius = 10
-          const x = Math.cos(angle) * radius
-          const z = Math.sin(angle) * radius
-
-          return (
-            <Text
-              key={`label-${pool.name}`}
-              position={[x, 0.5, z]}
-              fontSize={0.3}
-              color="#ffffff"
-              anchorX="center"
-              anchorY="middle"
-            >
-              {`${pool.name}\n${pool.percentage}%`}
-            </Text>
-          )
-        })}
 
         {/* Title - moved to background */}
         <group position={[0, 3, -1]}>
@@ -205,8 +185,8 @@ function MiningPoolPieChart() {
             const poolAngle = (pool.percentage / 100) * Math.PI * 2;
             const centerAngle = startAngle + poolAngle / 2; // Center of this pool's slice
             
-            // Position in a ring above the pie chart
-            const radius = 20; // Distance from center - increased for better visibility
+            // Position in a ring above the pie chart - smaller pools closer to blockchain
+            const radius = 8 + (12 * (1 - index / miningPools.length)); // Smallest pools closest (radius 8), largest furthest (radius 20)
             // Largest pools (lower index) get highest position
             const height = 10 + (22 - index * 1.0); // Heights from 32 down to about 10
             
@@ -241,27 +221,27 @@ function MiningPoolPieChart() {
                 />
               </mesh>
 
-              {/* Pool name label - larger and more visible */}
+              {/* Pool name label - positioned to the right and higher */}
               <Text
-                position={[0, ballSize + 1.5, 0]}
-                fontSize={0.4 + (ballSize / maxSize) * 0.3} // Larger text for bigger balls
-                color={pool.color}
-                anchorX="center"
+                position={[ballSize + 2.5, ballSize + 1, 0]}
+                fontSize={0.8 + (ballSize / maxSize) * 0.6} // Much larger text
+                color="#ffffff"
+                anchorX="left"
                 anchorY="middle"
-                outlineWidth={0.02}
+                outlineWidth={0.1}
                 outlineColor="#000000"
               >
                 {pool.name}
               </Text>
 
-              {/* Percentage label - more visible */}
+              {/* Percentage label - positioned below but higher than before */}
               <Text
-                position={[0, ballSize + 0.7, 0]}
-                fontSize={0.3 + (ballSize / maxSize) * 0.2} // Larger text for bigger balls
-                color="#ffffff"
+                position={[0, -ballSize - 0.5, 0]}
+                fontSize={0.6 + (ballSize / maxSize) * 0.5} // Much larger text
+                color={pool.color}
                 anchorX="center"
                 anchorY="middle"
-                outlineWidth={0.02}
+                outlineWidth={0.1}
                 outlineColor="#000000"
               >
                 {pool.percentage}%
@@ -291,6 +271,9 @@ function BlockchainBlocks() {
           // Exponential growth to reach 2GB
           const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
 
+          // Skip blocks above 250MB
+          if (size > 250) continue;
+
           // Linear proportional scaling - blocks are directly proportional to their size
           const baseScale = 0.01; // Scale for 2GB view
           const visualScale = size * baseScale;
@@ -303,23 +286,27 @@ function BlockchainBlocks() {
           for (let j = 0; j < i; j++) {
             const prevProgress = j / (totalBlocks - 1);
             const prevSize = Math.round(1 + (maxSize - 1) * Math.pow(prevProgress, 2));
+            if (prevSize > 250) continue; // Skip blocks that were filtered out
             const prevVisualScale = prevSize * baseScale;
             const prevClampedScale = Math.max(0.5, Math.min(20.0, prevVisualScale));
             y += prevClampedScale + gap; // Add height + small gap for each previous block
           }
 
+          // Recalculate progress based on 250MB max for proper color gradient
+          const colorProgress = Math.min(size / 250, 1); // 0 to 1 based on 250MB max
+          
           // Add pulsing for the biggest blocks
           const isBigBlock = size >= 80; // Pulse for 80MB+ blocks
 
             blocks.push(
               <group key={`block-${i}`} position={[0, y, 0]}>
-              {/* Main block */}
+              {/* Main block - rainbow gradient from dark blue to red based on 250MB scale */}
               <mesh>
                 <boxGeometry args={[clampedScale, clampedScale, clampedScale]} />
                 <meshStandardMaterial
-                  color={`hsl(${240 + (progress * 120)}, 90%, 60%)`}
-                  emissive={`hsl(${240 + (progress * 120)}, 80%, 40%)`}
-                  emissiveIntensity={0.3 + progress * 0.7}
+                  color={`hsl(${240 - (colorProgress * 240)}, 90%, 50%)`} // Dark blue (240) to red (0)
+                  emissive={`hsl(${240 - (colorProgress * 240)}, 80%, 30%)`}
+                  emissiveIntensity={0.3 + colorProgress * 0.7}
                   metalness={0.4}
                   roughness={0.1}
                 />
@@ -330,7 +317,7 @@ function BlockchainBlocks() {
                 <mesh>
                   <boxGeometry args={[clampedScale * 1.3, clampedScale * 1.3, clampedScale * 1.3]} />
                   <meshBasicMaterial
-                    color={`hsl(${240 + (progress * 120)}, 100%, 90%)`}
+                    color={`hsl(${240 - (colorProgress * 240)}, 100%, 70%)`}
                     transparent
                     opacity={0.15}
                   />
@@ -366,6 +353,10 @@ function BlockchainBlocks() {
         for (let i = 1; i <= totalBlocks; i++) { // All blocks for accurate line
           const progress = (i - 1) / (totalBlocks - 1);
           const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
+          
+          // Stop timeline at 250MB
+          if (size > 250) break;
+          
           const visualScale = size * baseScale;
           const clampedScale = Math.max(0.5, Math.min(20.0, visualScale));
           currentY += clampedScale + gap;
@@ -392,17 +383,19 @@ function BlockchainBlocks() {
         const totalBlocks = 100;
         const maxSize = 2000;
         const baseScale = 0.01;
+        let lastBlockSize = 0;
         
         for (let i = 0; i < totalBlocks; i++) {
           const progress = i / (totalBlocks - 1);
           const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
+          
+          // Stop at 250MB
+          if (size > 250) break;
+          
+          lastBlockSize = size;
           const visualScale = size * baseScale;
           const clampedScale = Math.max(0.5, Math.min(20.0, visualScale));
-          if (i < totalBlocks - 1) { // Don't add gap after the last block
-            totalHeight += clampedScale + gap;
-          } else {
-            totalHeight += clampedScale;
-          }
+          totalHeight += clampedScale + gap;
         }
 
         return (
@@ -413,7 +406,7 @@ function BlockchainBlocks() {
             anchorX="center"
             anchorY="middle"
           >
-            FINAL BLOCK • 2GB
+            250MB BLOCKS
           </Text>
         );
       })()}
