@@ -13,91 +13,101 @@ function WorldMap() {
   const continentShapes = useMemo(() => {
     const shapes: THREE.Shape[] = []
     
-    // North America
+    // North America - more recognizable shape
     const northAmerica = new THREE.Shape()
-    northAmerica.moveTo(-45, -35)
-    northAmerica.lineTo(-38, -30)
-    northAmerica.lineTo(-32, -28)
-    northAmerica.lineTo(-28, -22)
-    northAmerica.lineTo(-25, -18)
-    northAmerica.lineTo(-30, -15)
-    northAmerica.lineTo(-35, -18)
-    northAmerica.lineTo(-42, -25)
-    northAmerica.lineTo(-45, -35)
+    northAmerica.moveTo(-45, 25)
+    northAmerica.lineTo(-40, 30)
+    northAmerica.lineTo(-35, 28)
+    northAmerica.lineTo(-30, 25)
+    northAmerica.lineTo(-28, 20)
+    northAmerica.lineTo(-25, 15)
+    northAmerica.lineTo(-27, 10)
+    northAmerica.lineTo(-30, 12)
+    northAmerica.lineTo(-35, 15)
+    northAmerica.lineTo(-40, 18)
+    northAmerica.lineTo(-45, 25)
     shapes.push(northAmerica)
     
-    // South America
+    // South America - triangular shape tapering down
     const southAmerica = new THREE.Shape()
-    southAmerica.moveTo(-28, -5)
+    southAmerica.moveTo(-30, 5)
     southAmerica.lineTo(-25, 0)
-    southAmerica.lineTo(-22, 8)
-    southAmerica.lineTo(-20, 15)
-    southAmerica.lineTo(-22, 20)
-    southAmerica.lineTo(-25, 18)
-    southAmerica.lineTo(-28, 10)
-    southAmerica.lineTo(-30, 2)
+    southAmerica.lineTo(-23, -5)
+    southAmerica.lineTo(-22, -10)
+    southAmerica.lineTo(-21, -15)
+    southAmerica.lineTo(-22, -20)
+    southAmerica.lineTo(-24, -18)
+    southAmerica.lineTo(-26, -12)
     southAmerica.lineTo(-28, -5)
+    southAmerica.lineTo(-30, 0)
+    southAmerica.lineTo(-30, 5)
     shapes.push(southAmerica)
     
-    // Africa
+    // Africa - distinctive shape
     const africa = new THREE.Shape()
-    africa.moveTo(0, -15)
-    africa.lineTo(8, -12)
-    africa.lineTo(12, -5)
+    africa.moveTo(0, 15)
+    africa.lineTo(5, 18)
+    africa.lineTo(10, 15)
+    africa.lineTo(12, 10)
     africa.lineTo(10, 5)
-    africa.lineTo(8, 15)
-    africa.lineTo(5, 20)
-    africa.lineTo(0, 18)
-    africa.lineTo(-2, 10)
-    africa.lineTo(-3, 0)
-    africa.lineTo(0, -15)
+    africa.lineTo(8, 0)
+    africa.lineTo(6, -5)
+    africa.lineTo(5, -10)
+    africa.lineTo(3, -15)
+    africa.lineTo(0, -12)
+    africa.lineTo(-2, -5)
+    africa.lineTo(-2, 5)
+    africa.lineTo(0, 15)
     shapes.push(africa)
     
-    // Europe
+    // Europe - small irregular shape
     const europe = new THREE.Shape()
-    europe.moveTo(0, -30)
-    europe.lineTo(8, -28)
-    europe.lineTo(12, -32)
-    europe.lineTo(15, -30)
-    europe.lineTo(12, -25)
-    europe.lineTo(5, -25)
-    europe.lineTo(0, -30)
+    europe.moveTo(0, 25)
+    europe.lineTo(5, 28)
+    europe.lineTo(10, 27)
+    europe.lineTo(12, 25)
+    europe.lineTo(10, 23)
+    europe.lineTo(5, 22)
+    europe.lineTo(0, 25)
     shapes.push(europe)
     
-    // Asia
+    // Asia - large eastern landmass
     const asia = new THREE.Shape()
-    asia.moveTo(15, -28)
-    asia.lineTo(35, -25)
-    asia.lineTo(45, -20)
-    asia.lineTo(50, -15)
-    asia.lineTo(48, -8)
-    asia.lineTo(40, -5)
-    asia.lineTo(30, -8)
-    asia.lineTo(25, -12)
-    asia.lineTo(20, -20)
-    asia.lineTo(15, -28)
+    asia.moveTo(15, 30)
+    asia.lineTo(25, 28)
+    asia.lineTo(35, 25)
+    asia.lineTo(45, 20)
+    asia.lineTo(50, 15)
+    asia.lineTo(48, 10)
+    asia.lineTo(45, 5)
+    asia.lineTo(40, 8)
+    asia.lineTo(30, 12)
+    asia.lineTo(20, 20)
+    asia.lineTo(15, 25)
+    asia.lineTo(15, 30)
     shapes.push(asia)
     
-    // Australia
+    // Australia - oval shape
     const australia = new THREE.Shape()
-    australia.moveTo(35, 15)
-    australia.lineTo(45, 18)
-    australia.lineTo(48, 22)
-    australia.lineTo(45, 25)
-    australia.lineTo(38, 23)
-    australia.lineTo(35, 18)
-    australia.lineTo(35, 15)
+    australia.moveTo(35, -15)
+    australia.lineTo(42, -13)
+    australia.lineTo(45, -15)
+    australia.lineTo(45, -18)
+    australia.lineTo(42, -20)
+    australia.lineTo(38, -20)
+    australia.lineTo(35, -18)
+    australia.lineTo(35, -15)
     shapes.push(australia)
     
     return shapes
   }, [])
   
   return (
-    <group position={[0, 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+    <group position={[0, 0.1, 0]}>
       {continentShapes.map((shape, index) => (
-        <mesh key={index}>
+        <mesh key={index} rotation={[-Math.PI / 2, 0, 0]}>
           <shapeGeometry args={[shape]} />
-          <meshBasicMaterial color="#1a4d1a" opacity={0.7} transparent side={THREE.DoubleSide} />
+          <meshBasicMaterial color="#2d5a2d" opacity={0.5} transparent side={THREE.DoubleSide} />
         </mesh>
       ))}
     </group>
