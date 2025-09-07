@@ -115,12 +115,12 @@ function MiningPoolPieChart() {
           </Text>
         </group>
 
-        {/* SPIRAL OF MINING POOL BALLS - Create sorted array once to avoid duplicate keys */}
+        {/* SPIRAL OF MINING POOL BALLS - Sort by size for positioning */}
         {(() => {
           // Create sorted copy to avoid modifying original array
           const poolsBySize = [...miningPools].sort((a, b) => a.percentage - b.percentage);
 
-          return miningPools.map((pool, originalIndex) => {
+          return poolsBySize.map((pool, sortedIndex) => {
             // Scale ball size proportionally to pie slice percentages - MAXIMUM DRAMATIC
             const minSize = 0.1; // Really small minimum ball size
             const maxSize = 3.0; // Reasonable maximum ball size
@@ -146,13 +146,13 @@ function MiningPoolPieChart() {
               ballSize = Math.max(minSize, Math.min(maxSize, ballSize)); // Clamp
             }
 
-            // SPIRAL POSITIONING: Get index from sorted array
-            const poolIndex = poolsBySize.findIndex(p => p.name === pool.name);
+            // SPIRAL POSITIONING: Use sorted index directly
+            const poolIndex = sortedIndex;
 
-          // Create spiral path from pie chart (Y=0) up to blockchain blocks (Y~80)
+          // Create spiral path from pie chart (Y=0) up to blockchain blocks (Y~40 - halved height)
           const totalPools = miningPools.length;
           const spiralRadius = 12; // Distance from center axis
-          const spiralHeight = 80; // Total height of spiral (matches blockchain blocks)
+          const spiralHeight = 40; // Total height of spiral (halved - ends at ~1GB block)
           const startHeight = 2; // Start just above pie chart
 
           // Calculate position along spiral (from bottom to top)
@@ -168,7 +168,7 @@ function MiningPoolPieChart() {
           const finalHeight = 8 + (ballSize * 0.5); // Scale height with ball size
 
           return (
-            <group key={`miner-${pool.name}-${originalIndex}`} position={[x, spiralY, z]}>
+            <group key={`miner-${pool.name}-${sortedIndex}`} position={[x, spiralY, z]}>
               {/* Mining pool ball - sized by pool percentage */}
               <mesh>
                 <sphereGeometry args={[ballSize, 16, 16]} />
