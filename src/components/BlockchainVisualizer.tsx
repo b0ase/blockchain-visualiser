@@ -8,111 +8,6 @@ import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsType } from 'three-stdlib'
 
 
-// World Map Component - simplified continent shapes
-function WorldMap() {
-  const continentShapes = useMemo(() => {
-    const shapes: THREE.Shape[] = []
-    
-    // North America - more recognizable shape
-    const northAmerica = new THREE.Shape()
-    northAmerica.moveTo(-45, 25)
-    northAmerica.lineTo(-40, 30)
-    northAmerica.lineTo(-35, 28)
-    northAmerica.lineTo(-30, 25)
-    northAmerica.lineTo(-28, 20)
-    northAmerica.lineTo(-25, 15)
-    northAmerica.lineTo(-27, 10)
-    northAmerica.lineTo(-30, 12)
-    northAmerica.lineTo(-35, 15)
-    northAmerica.lineTo(-40, 18)
-    northAmerica.lineTo(-45, 25)
-    shapes.push(northAmerica)
-    
-    // South America - triangular shape tapering down
-    const southAmerica = new THREE.Shape()
-    southAmerica.moveTo(-30, 5)
-    southAmerica.lineTo(-25, 0)
-    southAmerica.lineTo(-23, -5)
-    southAmerica.lineTo(-22, -10)
-    southAmerica.lineTo(-21, -15)
-    southAmerica.lineTo(-22, -20)
-    southAmerica.lineTo(-24, -18)
-    southAmerica.lineTo(-26, -12)
-    southAmerica.lineTo(-28, -5)
-    southAmerica.lineTo(-30, 0)
-    southAmerica.lineTo(-30, 5)
-    shapes.push(southAmerica)
-    
-    // Africa - distinctive shape
-    const africa = new THREE.Shape()
-    africa.moveTo(0, 15)
-    africa.lineTo(5, 18)
-    africa.lineTo(10, 15)
-    africa.lineTo(12, 10)
-    africa.lineTo(10, 5)
-    africa.lineTo(8, 0)
-    africa.lineTo(6, -5)
-    africa.lineTo(5, -10)
-    africa.lineTo(3, -15)
-    africa.lineTo(0, -12)
-    africa.lineTo(-2, -5)
-    africa.lineTo(-2, 5)
-    africa.lineTo(0, 15)
-    shapes.push(africa)
-    
-    // Europe - small irregular shape
-    const europe = new THREE.Shape()
-    europe.moveTo(0, 25)
-    europe.lineTo(5, 28)
-    europe.lineTo(10, 27)
-    europe.lineTo(12, 25)
-    europe.lineTo(10, 23)
-    europe.lineTo(5, 22)
-    europe.lineTo(0, 25)
-    shapes.push(europe)
-    
-    // Asia - large eastern landmass
-    const asia = new THREE.Shape()
-    asia.moveTo(15, 30)
-    asia.lineTo(25, 28)
-    asia.lineTo(35, 25)
-    asia.lineTo(45, 20)
-    asia.lineTo(50, 15)
-    asia.lineTo(48, 10)
-    asia.lineTo(45, 5)
-    asia.lineTo(40, 8)
-    asia.lineTo(30, 12)
-    asia.lineTo(20, 20)
-    asia.lineTo(15, 25)
-    asia.lineTo(15, 30)
-    shapes.push(asia)
-    
-    // Australia - oval shape
-    const australia = new THREE.Shape()
-    australia.moveTo(35, -15)
-    australia.lineTo(42, -13)
-    australia.lineTo(45, -15)
-    australia.lineTo(45, -18)
-    australia.lineTo(42, -20)
-    australia.lineTo(38, -20)
-    australia.lineTo(35, -18)
-    australia.lineTo(35, -15)
-    shapes.push(australia)
-    
-    return shapes
-  }, [])
-  
-  return (
-    <group position={[0, 0.1, 0]}>
-      {continentShapes.map((shape, index) => (
-        <mesh key={index} rotation={[-Math.PI / 2, 0, 0]}>
-          <shapeGeometry args={[shape]} />
-          <meshBasicMaterial color="#2d5a2d" opacity={0.5} transparent side={THREE.DoubleSide} />
-        </mesh>
-      ))}
-    </group>
-  )
-}
 
 function MiningPoolPieChart() {
   const chartRef = useRef<THREE.Group>(null!)
@@ -360,9 +255,6 @@ function MiningPoolPieChart() {
 function MeshNetwork() {
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
-      {/* World map continents using actual geography */}
-      <WorldMap />
-      
       {/* Create a simple mesh network grid */}
       {(() => {
         const lines = [];
