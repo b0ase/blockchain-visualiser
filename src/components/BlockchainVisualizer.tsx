@@ -253,45 +253,129 @@ function MiningPoolPieChart() {
 }
 
 function MeshNetwork() {
+  // Create continent outlines
+  const continents = useMemo(() => {
+    const shapes = []
+    
+    // North America outline
+    const northAmerica = new THREE.Shape()
+    northAmerica.moveTo(-50, -30)
+    northAmerica.lineTo(-45, -28)
+    northAmerica.lineTo(-40, -30)
+    northAmerica.lineTo(-35, -25)
+    northAmerica.lineTo(-30, -20)
+    northAmerica.lineTo(-28, -15)
+    northAmerica.lineTo(-25, -10)
+    northAmerica.lineTo(-27, -8)
+    northAmerica.lineTo(-30, -10)
+    northAmerica.lineTo(-35, -15)
+    northAmerica.lineTo(-40, -18)
+    northAmerica.lineTo(-45, -22)
+    northAmerica.lineTo(-48, -28)
+    northAmerica.closePath()
+    shapes.push(northAmerica)
+    
+    // South America outline  
+    const southAmerica = new THREE.Shape()
+    southAmerica.moveTo(-30, -5)
+    southAmerica.lineTo(-28, -2)
+    southAmerica.lineTo(-25, 0)
+    southAmerica.lineTo(-23, 5)
+    southAmerica.lineTo(-22, 10)
+    southAmerica.lineTo(-21, 15)
+    southAmerica.lineTo(-22, 20)
+    southAmerica.lineTo(-23, 22)
+    southAmerica.lineTo(-25, 20)
+    southAmerica.lineTo(-27, 15)
+    southAmerica.lineTo(-28, 10)
+    southAmerica.lineTo(-29, 5)
+    southAmerica.lineTo(-30, 0)
+    southAmerica.closePath()
+    shapes.push(southAmerica)
+    
+    // Africa outline
+    const africa = new THREE.Shape()
+    africa.moveTo(-5, -20)
+    africa.lineTo(0, -18)
+    africa.lineTo(5, -15)
+    africa.lineTo(10, -10)
+    africa.lineTo(12, -5)
+    africa.lineTo(10, 0)
+    africa.lineTo(8, 5)
+    africa.lineTo(7, 10)
+    africa.lineTo(5, 15)
+    africa.lineTo(3, 18)
+    africa.lineTo(0, 20)
+    africa.lineTo(-3, 18)
+    africa.lineTo(-5, 15)
+    africa.lineTo(-6, 10)
+    africa.lineTo(-5, 5)
+    africa.lineTo(-3, 0)
+    africa.lineTo(-2, -5)
+    africa.lineTo(-3, -10)
+    africa.lineTo(-5, -15)
+    africa.closePath()
+    shapes.push(africa)
+    
+    // Europe outline
+    const europe = new THREE.Shape()
+    europe.moveTo(0, -35)
+    europe.lineTo(5, -33)
+    europe.lineTo(10, -35)
+    europe.lineTo(15, -32)
+    europe.lineTo(12, -30)
+    europe.lineTo(10, -28)
+    europe.lineTo(5, -30)
+    europe.lineTo(2, -32)
+    europe.closePath()
+    shapes.push(europe)
+    
+    // Asia outline
+    const asia = new THREE.Shape()
+    asia.moveTo(15, -30)
+    asia.lineTo(25, -28)
+    asia.lineTo(35, -25)
+    asia.lineTo(45, -20)
+    asia.lineTo(50, -15)
+    asia.lineTo(55, -10)
+    asia.lineTo(52, -5)
+    asia.lineTo(48, 0)
+    asia.lineTo(45, -3)
+    asia.lineTo(40, -5)
+    asia.lineTo(35, -10)
+    asia.lineTo(30, -15)
+    asia.lineTo(25, -20)
+    asia.lineTo(20, -25)
+    asia.lineTo(15, -28)
+    asia.closePath()
+    shapes.push(asia)
+    
+    // Australia outline
+    const australia = new THREE.Shape()
+    australia.moveTo(35, 15)
+    australia.lineTo(40, 13)
+    australia.lineTo(45, 15)
+    australia.lineTo(48, 18)
+    australia.lineTo(45, 20)
+    australia.lineTo(40, 22)
+    australia.lineTo(35, 20)
+    australia.lineTo(33, 18)
+    australia.closePath()
+    shapes.push(australia)
+    
+    return shapes
+  }, [])
+  
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
-      {/* Continents overlaid on mesh network */}
-      <group position={[0, 0.5, 0]}>
-        {/* North America */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-35, 0, -20]}>
-          <planeGeometry args={[15, 20]} />
-          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
-        </mesh>
-        
-        {/* South America */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-25, 0, 5]}>
-          <planeGeometry args={[8, 18]} />
-          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
-        </mesh>
-        
-        {/* Africa */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[5, 0, 0]}>
-          <planeGeometry args={[12, 25]} />
-          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
-        </mesh>
-        
-        {/* Europe */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[8, 0, -25]}>
-          <planeGeometry args={[10, 8]} />
-          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
-        </mesh>
-        
-        {/* Asia */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[35, 0, -15]}>
-          <planeGeometry args={[25, 20]} />
-          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
-        </mesh>
-        
-        {/* Australia */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[40, 0, 18]}>
-          <planeGeometry args={[10, 6]} />
-          <meshBasicMaterial color="#2a5a2a" opacity={0.6} transparent side={THREE.DoubleSide} />
-        </mesh>
+      {/* World map continent outlines */}
+      <group position={[0, 0.3, 0]}>
+        {continents.map((shape, i) => (
+          <mesh key={i} rotation={[-Math.PI / 2, 0, 0]}>
+            <shapeGeometry args={[shape]} />
+            <meshBasicMaterial color="#1a4d1a" opacity={0.4} transparent side={THREE.DoubleSide} />
+          </mesh>
+        ))}
       </group>
       
       {/* Create a simple mesh network grid */}
