@@ -253,6 +253,8 @@ function MiningPoolPieChart() {
 }
 
 function MeshNetwork() {
+  const txRef = useRef<THREE.Mesh>(null)
+  
   // Define the two specific node positions from the grid
   const gridSize = 25
   const spacing = 5
@@ -261,6 +263,23 @@ function MeshNetwork() {
   // Pick two specific grid positions for our transaction nodes
   const node1Pos: [number, number, number] = [-extent + 5 * spacing, 0, -extent + 8 * spacing] // Grid position [5, 8]
   const node2Pos: [number, number, number] = [-extent + 18 * spacing, 0, -extent + 16 * spacing] // Grid position [18, 16]
+  
+  // Animate transaction pulse along the line
+  useFrame((state) => {
+    if (txRef.current) {
+      // Calculate position along the line based on time
+      const t = (Math.sin(state.clock.elapsedTime * 2) + 1) / 2 // Oscillates between 0 and 1
+      
+      // Interpolate position between the two nodes
+      txRef.current.position.x = node1Pos[0] + (node2Pos[0] - node1Pos[0]) * t
+      txRef.current.position.y = node1Pos[1] + (node2Pos[1] - node1Pos[1]) * t
+      txRef.current.position.z = node1Pos[2] + (node2Pos[2] - node1Pos[2]) * t
+      
+      // Pulse the size
+      const scale = 0.3 + Math.sin(state.clock.elapsedTime * 8) * 0.1
+      txRef.current.scale.set(scale, scale, scale)
+    }
+  })
   
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
@@ -333,6 +352,12 @@ function MeshNetwork() {
         lineWidth={2}
         dashed={false}
       />
+      
+      {/* Animated transaction pulse */}
+      <mesh ref={txRef}>
+        <sphereGeometry args={[0.4, 16, 16]} />
+        <meshStandardMaterial color="#ffff00" emissive="#ffff00" emissiveIntensity={0.5} />
+      </mesh>
     </group>
   );
 }
