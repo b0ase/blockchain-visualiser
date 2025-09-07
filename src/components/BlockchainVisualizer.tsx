@@ -259,8 +259,8 @@ function MeshNetwork() {
   const extent = (gridSize - 1) * spacing / 2
   
   // Pick two specific grid positions for our transaction nodes
-  const node1Pos = [-extent + 5 * spacing, 0, -extent + 8 * spacing] // Grid position [5, 8]
-  const node2Pos = [-extent + 18 * spacing, 0, -extent + 16 * spacing] // Grid position [18, 16]
+  const node1Pos: [number, number, number] = [-extent + 5 * spacing, 0, -extent + 8 * spacing] // Grid position [5, 8]
+  const node2Pos: [number, number, number] = [-extent + 18 * spacing, 0, -extent + 16 * spacing] // Grid position [18, 16]
   
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
