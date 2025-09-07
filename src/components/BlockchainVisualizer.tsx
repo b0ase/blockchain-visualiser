@@ -5,6 +5,7 @@ import React, { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import * as THREE from 'three'
+import type { OrbitControls as OrbitControlsType } from 'three-stdlib'
 
 
 function MiningPoolPieChart() {
@@ -49,11 +50,6 @@ function MiningPoolPieChart() {
     }
   })
 
-  // Create perpendicular line from pie chart center
-  const linePoints = [
-    new THREE.Vector3(0, 0, 0),     // Pie chart center
-    new THREE.Vector3(0, 0, 10)     // Straight up in Z direction
-  ]
 
   return (
     <group ref={mainGroupRef}>
@@ -266,7 +262,6 @@ function BlockchainBlocks() {
 
         for (let i = 0; i < totalBlocks; i++) {
           const progress = i / (totalBlocks - 1);
-          const blockNumber = i + 1;
           
           // Exponential growth to reach 2GB
           const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
@@ -383,7 +378,6 @@ function BlockchainBlocks() {
         const totalBlocks = 100;
         const maxSize = 2000;
         const baseScale = 0.01;
-        let lastBlockSize = 0;
         
         for (let i = 0; i < totalBlocks; i++) {
           const progress = i / (totalBlocks - 1);
@@ -391,8 +385,6 @@ function BlockchainBlocks() {
           
           // Stop at 250MB
           if (size > 250) break;
-          
-          lastBlockSize = size;
           const visualScale = size * baseScale;
           const clampedScale = Math.max(0.5, Math.min(20.0, visualScale));
           totalHeight += clampedScale + gap;
@@ -415,7 +407,7 @@ function BlockchainBlocks() {
 }
 
 export default function BlockchainVisualizer() {
-  const controlsRef = useRef<any>(null)
+  const controlsRef = useRef<OrbitControlsType | null>(null)
 
   const resetView = () => {
     if (controlsRef.current) {
