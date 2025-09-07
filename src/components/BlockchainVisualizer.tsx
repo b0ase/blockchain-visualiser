@@ -831,9 +831,9 @@ export default function BlockchainVisualizer() {
               ? 'bg-[#00ff88]/30 border-[#00ff88]/50' 
               : 'border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50'
           }`}
-          title="Interactive playground"
+          title="Fantasy view"
         >
-          🎮 Play
+          🎮 Fantasy
         </button>
       </div>
 
