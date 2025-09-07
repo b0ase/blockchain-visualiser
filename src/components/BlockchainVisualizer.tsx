@@ -592,7 +592,7 @@ function BlockchainBlocks({ viewMode }: { viewMode: string }) {
             anchorX="center"
             anchorY="middle"
           >
-            250MB BLOCKS
+            {viewMode === 'multi' ? '1MB BLOCKS' : '250MB BLOCKS'}
           </Text>
         );
       })()}
