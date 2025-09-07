@@ -9,12 +9,28 @@ import type { OrbitControls as OrbitControlsType } from 'three-stdlib'
 
 
 
-function MiningPoolPieChart() {
+function MiningPoolPieChart({ viewMode }: { viewMode: string }) {
   const chartRef = useRef<THREE.Group>(null!)
   const mainGroupRef = useRef<THREE.Group>(null!)
 
+  // BSV Node implementations - Actual BSV ecosystem
+  const bsvNodes = [
+    { name: 'TAAL', percentage: 25.0, color: '#FF0000' },           // Red - Major BSV miner
+    { name: 'GorillaPool', percentage: 20.0, color: '#FF3300' },    // Red-Orange
+    { name: 'SVPool', percentage: 15.0, color: '#FF6600' },         // Orange
+    { name: 'WhatsOnChain', percentage: 8.0, color: '#FF9900' },    // Orange-Yellow - Node service
+    { name: 'ViaBTC BSV', percentage: 7.0, color: '#FFCC00' },      // Yellow-Orange
+    { name: 'Mempool', percentage: 5.0, color: '#FFFF00' },         // Yellow
+    { name: 'MARAPool', percentage: 4.5, color: '#CCFF00' },        // Yellow-Green
+    { name: 'SBI Mining', percentage: 3.5, color: '#99FF00' },      // Light Green
+    { name: 'Unknown', percentage: 3.0, color: '#66FF00' },         // Green
+    { name: 'Solo Miners', percentage: 2.5, color: '#33FF00' },     // Green
+    { name: 'BSV Pool', percentage: 2.0, color: '#00FF00' },        // Pure Green
+    { name: 'Other Nodes', percentage: 4.5, color: '#00FF33' }      // Green-Cyan
+  ]
+
   // BTC Mining Pool data - Rainbow gradient palette
-  const miningPools = [
+  const btcPools = [
     { name: 'AntPool', percentage: 18.5, color: '#FF0000' },        // Red
     { name: 'Poolin', percentage: 15.2, color: '#FF3300' },         // Red-Orange
     { name: 'BTC.com', percentage: 12.8, color: '#FF6600' },        // Orange
@@ -38,6 +54,9 @@ function MiningPoolPieChart() {
     { name: 'HashNest', percentage: 0.5, color: '#0000FF' },        // Pure Blue
     { name: 'Tiny Pools', percentage: 1.4, color: '#3300FF' }       // Blue-Violet
   ]
+
+  // Use BSV nodes for 'single' view, BTC pools for 'multi' view
+  const miningPools = viewMode === 'single' ? bsvNodes : btcPools
 
   useFrame((state) => {
     // Gently rotate the entire visualization
@@ -133,7 +152,7 @@ function MiningPoolPieChart() {
             anchorX="center"
             anchorY="middle"
           >
-            BTC Mining Pools
+            {viewMode === 'single' ? 'BSV Node Network' : 'BTC Mining Pools'}
           </Text>
         </group>
 
@@ -602,7 +621,7 @@ export default function BlockchainVisualizer() {
           gl.domElement.tabIndex = -1;
         }}
       >
-        <MiningPoolPieChart />
+        <MiningPoolPieChart viewMode={viewMode} />
         {viewMode === 'single' && <BlockchainBlocks />}
         {viewMode === 'multi' && (
           <>
@@ -640,7 +659,7 @@ export default function BlockchainVisualizer() {
       {/* FULL LEFT SIDE Mining Pool Information Panel */}
       <div className="absolute top-0 left-0 w-96 h-full bg-black/95 backdrop-blur-md p-4 text-white font-mono text-xs border-r border-blue-500/30 overflow-y-auto">
         <h3 className="text-blue-400 font-bold mb-3 flex items-center gap-2 text-sm">
-          ⛏️ BTC MINING POOLS
+          ⛏️ {viewMode === 'single' ? 'BSV NODE NETWORK' : 'BTC MINING POOLS'}
         </h3>
 
         {/* Total Hash Rate */}
