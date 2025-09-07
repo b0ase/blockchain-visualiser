@@ -586,11 +586,12 @@ function BlockchainBlocks({ viewMode }: { viewMode: string }) {
 
         return (
           <Text
-            position={[0, totalHeight + 3, 0]}
-            fontSize={1.5}
+            position={[15, totalHeight / 2, 0]}  // Position to the right, at mid-height
+            fontSize={2}
             color="#ff4444"
-            anchorX="center"
+            anchorX="left"
             anchorY="middle"
+            rotation={[0, 0, 0]}  // Keep text facing forward
           >
             {viewMode === 'multi' ? '1MB BLOCKS' : '250MB BLOCKS'}
           </Text>
