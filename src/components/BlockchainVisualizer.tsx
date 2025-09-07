@@ -443,26 +443,28 @@ function MultiChainBlocks() {
   );
 }
 
-function BlockchainBlocks() {
+function BlockchainBlocks({ viewMode }: { viewMode: string }) {
   return (
     <group>
-      {/* ONE CHAIN of blocks - getting bigger every 10 minutes! */}
+      {/* ONE CHAIN of blocks - BTC: all 1MB, BSV: getting bigger every 10 minutes! */}
       {(() => {
         const blocks = [];
-        const totalBlocks = 100; // 100 blocks up to 2GB
-        const maxSize = 2000; // 2GB max
+        const totalBlocks = 100; // 100 blocks
+        const maxSize = viewMode === 'multi' ? 1 : 2000; // BTC: 1MB max, BSV: 2GB max
 
         for (let i = 0; i < totalBlocks; i++) {
           const progress = i / (totalBlocks - 1);
           
-          // Exponential growth to reach 2GB
-          const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
+          // BTC: constant 1MB, BSV: exponential growth to reach 2GB
+          const size = viewMode === 'multi' 
+            ? 1 // BTC always 1MB
+            : Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
 
-          // Skip blocks above 250MB
-          if (size > 250) continue;
+          // Skip blocks above 250MB for BSV
+          if (viewMode !== 'multi' && size > 250) continue;
 
           // Linear proportional scaling - blocks are directly proportional to their size
-          const baseScale = 0.01; // Scale for 2GB view
+          const baseScale = viewMode === 'multi' ? 1 : 0.01; // BTC: full size for 1MB, BSV: scale for larger sizes
           const visualScale = size * baseScale;
           const clampedScale = Math.max(0.5, Math.min(20.0, visualScale));
 
@@ -622,11 +624,11 @@ export default function BlockchainVisualizer() {
         }}
       >
         <MiningPoolPieChart viewMode={viewMode} />
-        {viewMode === 'single' && <BlockchainBlocks />}
-        {viewMode === 'multi' && <BlockchainBlocks />}
+        {viewMode === 'single' && <BlockchainBlocks viewMode={viewMode} />}
+        {viewMode === 'multi' && <BlockchainBlocks viewMode={viewMode} />}
         {viewMode === 'play' && (
           <>
-            <BlockchainBlocks />
+            <BlockchainBlocks viewMode={viewMode} />
             <MultiChainBlocks />
             <MeshNetwork />
           </>
