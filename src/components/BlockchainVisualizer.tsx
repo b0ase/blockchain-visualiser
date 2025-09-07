@@ -253,8 +253,39 @@ function MiningPoolPieChart() {
 }
 
 function MeshNetwork() {
+  const txLineRef = useRef<THREE.Mesh>(null)
+  
+  // Animate the transaction line
+  useFrame((state) => {
+    if (txLineRef.current) {
+      // Pulse the transaction line
+      const scale = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.2
+      txLineRef.current.scale.set(scale, scale, 1)
+    }
+  })
+  
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
+      
+      {/* Two white nodes representing transaction endpoints */}
+      <mesh position={[-30, 0.5, -20]}>
+        <sphereGeometry args={[1, 16, 16]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      
+      <mesh position={[25, 0.5, 15]}>
+        <sphereGeometry args={[1, 16, 16]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      
+      {/* Transaction line between nodes */}
+      <Line
+        ref={txLineRef}
+        points={[[-30, 0.5, -20], [25, 0.5, 15]]}
+        color="#00ff00"
+        lineWidth={3}
+        dashed={false}
+      />
       
       {/* Create a simple mesh network grid */}
       {(() => {
