@@ -426,15 +426,6 @@ export default function BlockchainVisualizer() {
     }
   }
 
-  const viewMiddle = () => {
-    if (controlsRef.current) {
-      // View middle section of chain
-      controlsRef.current.target.set(0, 250, 0)
-      controlsRef.current.object.position.set(0, 250, 400)
-      controlsRef.current.update()
-    }
-  }
-
   return (
     <div className="w-full h-screen relative pl-96" style={{ background: 'linear-gradient(135deg, #000000 0%, #0a0a0a 100%)' }}>
 
@@ -613,21 +604,14 @@ export default function BlockchainVisualizer() {
 
       </div>
 
-      {/* Quick Navigation Panel - Right Side */}
-      <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/90 backdrop-blur-md p-2 rounded-lg border border-[#00ff88]/30 flex flex-col gap-2">
-        <button
-          onClick={viewMiddle}
-          className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
-          title="View middle section"
-        >
-          🎯 Middle
-        </button>
+      {/* Reset Button - Bottom Right */}
+      <div className="absolute bottom-4 right-4 bg-black/90 backdrop-blur-md p-2 rounded-lg border border-[#00ff88]/30">
         <button
           onClick={resetView}
           className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
-          title="View base with pie chart"
+          title="Reset view"
         >
-          🥧 Base
+          🔄 Reset
         </button>
       </div>
 
