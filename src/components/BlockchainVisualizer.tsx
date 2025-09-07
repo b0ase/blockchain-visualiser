@@ -335,32 +335,26 @@ function MiningPoolPieChart() {
   )
 }
 
-function BlockchainBlocks({ viewMode }: { viewMode: 'view1' | 'view2' }) {
+function BlockchainBlocks() {
   return (
     <group>
       {/* ONE CHAIN of blocks - getting bigger every 10 minutes! */}
       {(() => {
         const blocks = [];
-        const totalBlocks = viewMode === 'view1' ? 14 : 100; // 14 blocks for view1, 100 for view2
-        const maxSize = viewMode === 'view1' ? 14 : 2000; // 14MB max for view1, 2GB for view2
+        const totalBlocks = 100; // 100 blocks up to 2GB
+        const maxSize = 2000; // 2GB max
 
         for (let i = 0; i < totalBlocks; i++) {
           const progress = i / (totalBlocks - 1);
           const blockNumber = i + 1;
           
-          // Different scaling based on mode
-          let size;
-          if (viewMode === 'view1') {
-            size = blockNumber; // 1MB to 14MB
-          } else {
-            // Exponential growth to reach 2GB
-            size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
-          }
+          // Exponential growth to reach 2GB
+          const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
 
           // Linear proportional scaling - blocks are directly proportional to their size
-          const baseScale = viewMode === 'view1' ? 0.5 : 0.01; // Different scale for each view
+          const baseScale = 0.01; // Scale for 2GB view
           const visualScale = size * baseScale;
-          const clampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, visualScale));
+          const clampedScale = Math.max(0.5, Math.min(20.0, visualScale));
 
           // Calculate position with small gaps and first block above pie chart at bottom
           const gap = 0.5; // Visible gap between blocks
@@ -368,14 +362,9 @@ function BlockchainBlocks({ viewMode }: { viewMode: 'view1' | 'view2' }) {
 
           for (let j = 0; j < i; j++) {
             const prevProgress = j / (totalBlocks - 1);
-            let prevSize;
-            if (viewMode === 'view1') {
-              prevSize = j + 1; // 1MB to 14MB
-            } else {
-              prevSize = Math.round(1 + (maxSize - 1) * Math.pow(prevProgress, 2));
-            }
+            const prevSize = Math.round(1 + (maxSize - 1) * Math.pow(prevProgress, 2));
             const prevVisualScale = prevSize * baseScale;
-            const prevClampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, prevVisualScale));
+            const prevClampedScale = Math.max(0.5, Math.min(20.0, prevVisualScale));
             y += prevClampedScale + gap; // Add height + small gap for each previous block
           }
 
@@ -430,20 +419,15 @@ function BlockchainBlocks({ viewMode }: { viewMode: 'view1' | 'view2' }) {
         const timelinePoints = [0, -23, 0]; // Start above pie chart at bottom
         const gap = 0.5; // Same gap as blocks
         let currentY = -23; // Start from first block position
-        const totalBlocks = viewMode === 'view1' ? 14 : 100;
-        const maxSize = viewMode === 'view1' ? 14 : 2000;
-        const baseScale = viewMode === 'view1' ? 0.5 : 0.01;
+        const totalBlocks = 100;
+        const maxSize = 2000;
+        const baseScale = 0.01;
 
         for (let i = 1; i <= totalBlocks; i++) { // All blocks for accurate line
           const progress = (i - 1) / (totalBlocks - 1);
-          let size;
-          if (viewMode === 'view1') {
-            size = i; // 1MB to 14MB
-          } else {
-            size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
-          }
+          const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
           const visualScale = size * baseScale;
-          const clampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, visualScale));
+          const clampedScale = Math.max(0.5, Math.min(20.0, visualScale));
           currentY += clampedScale + gap;
           timelinePoints.push(0, currentY, 0);
         }
@@ -465,20 +449,15 @@ function BlockchainBlocks({ viewMode }: { viewMode: 'view1' | 'view2' }) {
       {(() => {
         const gap = 0.5; // Same gap as blocks
         let totalHeight = -23; // Start from first block position
-        const totalBlocks = viewMode === 'view1' ? 14 : 100;
-        const maxSize = viewMode === 'view1' ? 14 : 2000;
-        const baseScale = viewMode === 'view1' ? 0.5 : 0.01;
+        const totalBlocks = 100;
+        const maxSize = 2000;
+        const baseScale = 0.01;
         
         for (let i = 0; i < totalBlocks; i++) {
           const progress = i / (totalBlocks - 1);
-          let size;
-          if (viewMode === 'view1') {
-            size = i + 1; // 1MB to 14MB
-          } else {
-            size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
-          }
+          const size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
           const visualScale = size * baseScale;
-          const clampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, visualScale));
+          const clampedScale = Math.max(0.5, Math.min(20.0, visualScale));
           if (i < totalBlocks - 1) { // Don't add gap after the last block
             totalHeight += clampedScale + gap;
           } else {
@@ -494,7 +473,7 @@ function BlockchainBlocks({ viewMode }: { viewMode: 'view1' | 'view2' }) {
             anchorX="center"
             anchorY="middle"
           >
-            {viewMode === 'view1' ? 'FINAL BLOCK • 14MB' : 'FINAL BLOCK • 2GB'}
+            FINAL BLOCK • 2GB
           </Text>
         );
       })()}
@@ -504,22 +483,12 @@ function BlockchainBlocks({ viewMode }: { viewMode: 'view1' | 'view2' }) {
 
 export default function BlockchainVisualizer() {
   const controlsRef = useRef<any>(null)
-  const [viewMode, setViewMode] = React.useState<'view1' | 'view2'>('view1')
 
   const resetView = () => {
     if (controlsRef.current) {
       // Reset to base view with pie chart at bottom center
       controlsRef.current.target.set(0, -10, 0)  // Look slightly above the pie chart
       controlsRef.current.object.position.set(0, 10, 80)  // Camera positioned higher and back
-      controlsRef.current.update()
-    }
-  }
-
-  const viewFullChain = () => {
-    if (controlsRef.current) {
-      // View entire chain from distance
-      controlsRef.current.target.set(0, 500, 0)
-      controlsRef.current.object.position.set(0, 500, 1500)
       controlsRef.current.update()
     }
   }
@@ -533,40 +502,8 @@ export default function BlockchainVisualizer() {
     }
   }
 
-  const viewTop = () => {
-    if (controlsRef.current) {
-      // View top of chain (100MB blocks)
-      controlsRef.current.target.set(0, 950, 0)
-      controlsRef.current.object.position.set(0, 950, 200)
-      controlsRef.current.update()
-    }
-  }
-
   return (
     <div className="w-full h-screen relative pl-96" style={{ background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)' }}>
-      {/* View Mode Tabs - Top Center */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/90 backdrop-blur-md rounded-lg border border-[#00ff88]/30 flex">
-        <button
-          onClick={() => setViewMode('view1')}
-          className={`px-6 py-2 rounded-l-lg font-mono text-sm transition-all ${
-            viewMode === 'view1' 
-              ? 'bg-[#00ff88]/30 text-[#00ff88] border-r border-[#00ff88]/30' 
-              : 'text-gray-400 hover:text-[#00ff88] hover:bg-[#00ff88]/10'
-          }`}
-        >
-          📦 View 1 (1-14MB)
-        </button>
-        <button
-          onClick={() => setViewMode('view2')}
-          className={`px-6 py-2 rounded-r-lg font-mono text-sm transition-all ${
-            viewMode === 'view2' 
-              ? 'bg-[#00ff88]/30 text-[#00ff88] border-l border-[#00ff88]/30' 
-              : 'text-gray-400 hover:text-[#00ff88] hover:bg-[#00ff88]/10'
-          }`}
-        >
-          🚀 View 2 (up to 2GB)
-        </button>
-      </div>
 
       <Canvas
         camera={{ position: [0, 500, 1500], fov: 55 }}
@@ -576,7 +513,7 @@ export default function BlockchainVisualizer() {
         }}
       >
         <MiningPoolPieChart />
-        <BlockchainBlocks viewMode={viewMode} />
+        <BlockchainBlocks />
         <OrbitControls
           ref={controlsRef}
           enableDamping
@@ -746,32 +683,18 @@ export default function BlockchainVisualizer() {
       {/* Quick Navigation Panel - Right Side */}
       <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/90 backdrop-blur-md p-2 rounded-lg border border-[#00ff88]/30 flex flex-col gap-2">
         <button
-          onClick={viewFullChain}
-          className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
-          title="View entire blockchain"
-        >
-          📊 Full Chain
-        </button>
-        <button
-          onClick={viewTop}
-          className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
-          title="View largest blocks (100MB)"
-        >
-          🔝 Top (100MB)
-        </button>
-        <button
           onClick={viewMiddle}
           className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
-          title="View middle section (~50MB)"
+          title="View middle section"
         >
-          🎯 Middle (50MB)
+          🎯 Middle
         </button>
         <button
           onClick={resetView}
           className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
           title="View base with pie chart"
         >
-          🥧 Base (1MB)
+          🥧 Base
         </button>
       </div>
 
