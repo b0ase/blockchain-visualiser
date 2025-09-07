@@ -6,33 +6,34 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import * as THREE from 'three'
 
+
 function MiningPoolPieChart() {
   const chartRef = useRef<THREE.Group>(null!)
 
-  // BTC Mining Pool data - BREAKING DOWN THE MISLEADING 'OTHERS' CATEGORY
+  // BTC Mining Pool data - Rainbow gradient palette
   const miningPools = [
-    { name: 'AntPool', percentage: 18.5, color: '#FF0000' },        // Bright Red
-    { name: 'Poolin', percentage: 15.2, color: '#00FF00' },         // Bright Green
-    { name: 'BTC.com', percentage: 12.8, color: '#0000FF' },        // Bright Blue
-    { name: 'F2Pool', percentage: 10.3, color: '#FFFF00' },         // Bright Yellow
-    { name: 'Binance', percentage: 8.9, color: '#FF00FF' },         // Bright Magenta
-    { name: 'Foundry USA', percentage: 6.0, color: '#FFA500' },     // Orange
-    { name: 'ViaBTC', percentage: 4.5, color: '#800080' },          // Purple
-    { name: 'Braiins', percentage: 3.5, color: '#008080' },         // Teal
-    { name: 'Luxor', percentage: 2.8, color: '#FFC0CB' },           // Pink
-    { name: 'SBI Crypto', percentage: 2.2, color: '#A52A2A' },      // Brown
-    { name: 'BitFury', percentage: 2.5, color: '#FF6347' },         // Tomato Red
-    { name: 'Kano CKPool', percentage: 2.0, color: '#32CD32' },     // Lime Green
-    { name: 'SpiderPool', percentage: 1.8, color: '#8A2BE2' },      // Blue Violet
-    { name: 'Huobi Pool', percentage: 1.5, color: '#FFD700' },      // Gold
-    { name: 'OKEx Pool', percentage: 1.3, color: '#DC143C' },       // Crimson
-    { name: 'BTC.TOP', percentage: 1.2, color: '#00CED1' },         // Dark Turquoise
-    { name: '58COIN', percentage: 1.0, color: '#FF69B4' },          // Hot Pink
-    { name: 'YourPool', percentage: 0.8, color: '#CD5C5C' },        // Indian Red
-    { name: 'BitClub', percentage: 0.7, color: '#F0E68C' },         // Khaki
-    { name: 'BTCC', percentage: 0.6, color: '#98FB98' },            // Pale Green
-    { name: 'HashNest', percentage: 0.5, color: '#DDA0DD' },        // Plum
-    { name: 'Tiny Pools', percentage: 1.4, color: '#D3D3D3' }       // Light Gray (remaining small pools)
+    { name: 'AntPool', percentage: 18.5, color: '#FF0000' },        // Red
+    { name: 'Poolin', percentage: 15.2, color: '#FF3300' },         // Red-Orange
+    { name: 'BTC.com', percentage: 12.8, color: '#FF6600' },        // Orange
+    { name: 'F2Pool', percentage: 10.3, color: '#FF9900' },         // Orange-Yellow
+    { name: 'Binance', percentage: 8.9, color: '#FFCC00' },         // Yellow-Orange
+    { name: 'Foundry USA', percentage: 6.0, color: '#FFFF00' },     // Yellow
+    { name: 'ViaBTC', percentage: 4.5, color: '#CCFF00' },          // Yellow-Green
+    { name: 'Braiins', percentage: 3.5, color: '#99FF00' },         // Light Green
+    { name: 'Luxor', percentage: 2.8, color: '#66FF00' },           // Green
+    { name: 'SBI Crypto', percentage: 2.2, color: '#33FF00' },      // Green
+    { name: 'BitFury', percentage: 2.5, color: '#00FF00' },         // Pure Green
+    { name: 'Kano CKPool', percentage: 2.0, color: '#00FF33' },     // Green-Cyan
+    { name: 'SpiderPool', percentage: 1.8, color: '#00FF66' },      // Cyan-Green
+    { name: 'Huobi Pool', percentage: 1.5, color: '#00FF99' },      // Cyan
+    { name: 'OKEx Pool', percentage: 1.3, color: '#00FFCC' },       // Cyan
+    { name: 'BTC.TOP', percentage: 1.2, color: '#00FFFF' },         // Pure Cyan
+    { name: '58COIN', percentage: 1.0, color: '#00CCFF' },          // Cyan-Blue
+    { name: 'YourPool', percentage: 0.8, color: '#0099FF' },        // Light Blue
+    { name: 'BitClub', percentage: 0.7, color: '#0066FF' },         // Blue
+    { name: 'BTCC', percentage: 0.6, color: '#0033FF' },            // Blue
+    { name: 'HashNest', percentage: 0.5, color: '#0000FF' },        // Pure Blue
+    { name: 'Tiny Pools', percentage: 1.4, color: '#3300FF' }       // Blue-Violet
   ]
 
   useFrame((state) => {
@@ -50,14 +51,130 @@ function MiningPoolPieChart() {
 
   return (
     <group>
-      <group ref={chartRef} position={[0, -25, 0]}>
-        {/* Pie chart base */}
-        <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[8, 8, 0.2, 64]} />
-          <meshStandardMaterial color="#1a1a2e" />
+      {/* Earth hemisphere underneath everything */}
+      <group position={[0, -28, 0]}>
+        {/* Outer atmosphere glow */}
+        <mesh rotation={[Math.PI, 0, 0]}>
+          <sphereGeometry args={[38, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshStandardMaterial 
+            color="#4A90E2"
+            opacity={0.15}
+            transparent
+            emissive="#4A90E2"
+            emissiveIntensity={0.1}
+            side={THREE.DoubleSide}
+          />
         </mesh>
+        
+        {/* Main Earth hemisphere */}
+        <mesh rotation={[Math.PI, 0, 0]}>
+          <sphereGeometry args={[35, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshStandardMaterial 
+            color="#1E3A8A"
+            emissive="#1E3A8A"
+            emissiveIntensity={0.05}
+            metalness={0.3}
+            roughness={0.7}
+          />
+        </mesh>
+        
+        {/* Continental landmasses - flat on the hemisphere surface */}
+        {/* North America */}
+        <mesh position={[-12, 0.2, 8]} rotation={[Math.PI/2, 0, 0]}>
+          <circleGeometry args={[7, 32]} />
+          <meshStandardMaterial 
+            color="#4A7C59"
+            emissive="#4A7C59"
+            emissiveIntensity={0.05}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        
+        {/* South America */}
+        <mesh position={[-10, 0.2, -8]} rotation={[Math.PI/2, 0, 0]}>
+          <circleGeometry args={[5, 32]} />
+          <meshStandardMaterial 
+            color="#4A7C59"
+            emissive="#4A7C59"
+            emissiveIntensity={0.05}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        
+        {/* Africa */}
+        <mesh position={[4, 0.2, -2]} rotation={[Math.PI/2, 0, 0]}>
+          <circleGeometry args={[6, 32]} />
+          <meshStandardMaterial 
+            color="#4A7C59"
+            emissive="#4A7C59"
+            emissiveIntensity={0.05}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        
+        {/* Europe */}
+        <mesh position={[2, 0.2, 10]} rotation={[Math.PI/2, 0, 0]}>
+          <circleGeometry args={[3, 32]} />
+          <meshStandardMaterial 
+            color="#4A7C59"
+            emissive="#4A7C59"
+            emissiveIntensity={0.05}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        
+        {/* Asia */}
+        <mesh position={[15, 0.2, 5]} rotation={[Math.PI/2, 0, 0]}>
+          <circleGeometry args={[9, 32]} />
+          <meshStandardMaterial 
+            color="#4A7C59"
+            emissive="#4A7C59"
+            emissiveIntensity={0.05}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        
+        {/* Australia */}
+        <mesh position={[16, 0.2, -12]} rotation={[Math.PI/2, 0, 0]}>
+          <circleGeometry args={[4, 32]} />
+          <meshStandardMaterial 
+            color="#4A7C59"
+            emissive="#4A7C59"
+            emissiveIntensity={0.05}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        
+        {/* Inner core glow */}
+        <mesh position={[0, 1, 0]}>
+          <cylinderGeometry args={[35, 35, 0.1, 64]} />
+          <meshBasicMaterial 
+            color="#FF6B00"
+            opacity={0.3}
+            transparent
+          />
+        </mesh>
+      </group>
 
-        {/* Generate pie slices */}
+      <group ref={chartRef} position={[0, -25, 0]}>
+        {/* Generate outer pie slices - bigger and brighter, representing distributed nodes */}
+        {miningPools.map((pool, index) => {
+          const startAngle = miningPools.slice(0, index).reduce((sum, p) => sum + p.percentage, 0) / 100 * Math.PI * 2
+          const angle = (pool.percentage / 100) * Math.PI * 2
+
+          return (
+            <mesh key={`outer-${pool.name}`} position={[0, -0.15, 0]}>
+              <cylinderGeometry args={[34.5, 34.5, 0.12, 32, 1, false, startAngle, angle]} />
+              <meshBasicMaterial 
+                color={pool.color} 
+                opacity={0.6}
+                transparent
+              />
+            </mesh>
+          )
+        })}
+
+        {/* Generate inner pie slices - original */}
         {miningPools.map((pool, index) => {
           const startAngle = miningPools.slice(0, index).reduce((sum, p) => sum + p.percentage, 0) / 100 * Math.PI * 2
           const angle = (pool.percentage / 100) * Math.PI * 2
@@ -115,12 +232,9 @@ function MiningPoolPieChart() {
           </Text>
         </group>
 
-        {/* SPIRAL OF MINING POOL BALLS - Sort by size for positioning */}
+        {/* MINING POOL BALLS - Positioned above their pie slices */}
         {(() => {
-          // Create sorted copy to avoid modifying original array
-          const poolsBySize = [...miningPools].sort((a, b) => a.percentage - b.percentage);
-
-          return poolsBySize.map((pool, sortedIndex) => {
+          return miningPools.map((pool, index) => {
             // Scale ball size proportionally to pie slice percentages - MAXIMUM DRAMATIC
             const minSize = 0.1; // Really small minimum ball size
             const maxSize = 3.0; // Reasonable maximum ball size
@@ -146,29 +260,25 @@ function MiningPoolPieChart() {
               ballSize = Math.max(minSize, Math.min(maxSize, ballSize)); // Clamp
             }
 
-            // SPIRAL POSITIONING: Use sorted index directly
-            const poolIndex = sortedIndex;
-
-          // Create spiral path from pie chart (Y=0) up to blockchain blocks (Y~40 - halved height)
-          const totalPools = miningPools.length;
-          const spiralRadius = 12; // Distance from center axis
-          const spiralHeight = 40; // Total height of spiral (halved - ends at ~1GB block)
-          const startHeight = 2; // Start just above pie chart
-
-          // Calculate position along spiral (from bottom to top)
-          const progress = poolIndex / (totalPools - 1); // 0 to 1
-          const angle = progress * Math.PI * 4; // 4 full rotations
-          const spiralY = startHeight + progress * (spiralHeight - startHeight);
-
-          // Spiral position around Y-axis
-          const x = Math.cos(angle) * spiralRadius;
-          const z = Math.sin(angle) * spiralRadius;
-
-          // Final positioning with ball size scaling
-          const finalHeight = 8 + (ballSize * 0.5); // Scale height with ball size
+            // Position above corresponding pie slice - MATCH PIE CHART EXACTLY
+            const startAngle = miningPools.slice(0, index).reduce((sum, p) => sum + p.percentage, 0) / 100 * Math.PI * 2;
+            const poolAngle = (pool.percentage / 100) * Math.PI * 2;
+            const centerAngle = startAngle + poolAngle / 2; // Center of this pool's slice
+            
+            // Position in a ring above the pie chart
+            const radius = 20; // Distance from center - increased for better visibility
+            // Largest pools (lower index) get highest position
+            const height = 10 + (22 - index * 1.0); // Heights from 32 down to about 10
+            
+            // The cylinderGeometry creates slices, but we need to reverse the direction
+            // and rotate 180 degrees more (add PI)
+            const reversedAngle = -centerAngle - Math.PI / 2 + Math.PI; // Reverse, rotate 90 clockwise, then 180 more
+            const x = Math.cos(reversedAngle) * radius;
+            const z = Math.sin(reversedAngle) * radius;
+            const spiralY = height;
 
           return (
-            <group key={`miner-${pool.name}-${sortedIndex}`} position={[x, spiralY, z]}>
+            <group key={`miner-${pool.name}-${index}`} position={[x, spiralY, z]}>
               {/* Mining pool ball - sized by pool percentage */}
               <mesh>
                 <sphereGeometry args={[ballSize, 16, 16]} />
@@ -191,24 +301,28 @@ function MiningPoolPieChart() {
                 />
               </mesh>
 
-              {/* Pool name label */}
+              {/* Pool name label - larger and more visible */}
               <Text
-                position={[0, ballSize + 1.0, 0]}
-                fontSize={0.25 + (ballSize / maxSize) * 0.15} // Larger text for bigger balls
+                position={[0, ballSize + 1.5, 0]}
+                fontSize={0.4 + (ballSize / maxSize) * 0.3} // Larger text for bigger balls
                 color={pool.color}
                 anchorX="center"
                 anchorY="middle"
+                outlineWidth={0.02}
+                outlineColor="#000000"
               >
                 {pool.name}
               </Text>
 
-              {/* Percentage label */}
+              {/* Percentage label - more visible */}
               <Text
-                position={[0, ballSize + 0.4, 0]}
-                fontSize={0.18 + (ballSize / maxSize) * 0.12} // Larger text for bigger balls
+                position={[0, ballSize + 0.7, 0]}
+                fontSize={0.3 + (ballSize / maxSize) * 0.2} // Larger text for bigger balls
                 color="#ffffff"
                 anchorX="center"
                 anchorY="middle"
+                outlineWidth={0.02}
+                outlineColor="#000000"
               >
                 {pool.percentage}%
               </Text>
@@ -217,34 +331,56 @@ function MiningPoolPieChart() {
         });
         })()}
       </group>
+    </group>
+  )
+}
 
+function BlockchainBlocks({ viewMode }: { viewMode: 'view1' | 'view2' }) {
+  return (
+    <group>
       {/* ONE CHAIN of blocks - getting bigger every 10 minutes! */}
       {(() => {
         const blocks = [];
-        const totalBlocks = 100; // Just show 100 blocks in the chain
+        const totalBlocks = viewMode === 'view1' ? 14 : 100; // 14 blocks for view1, 100 for view2
+        const maxSize = viewMode === 'view1' ? 14 : 2000; // 14MB max for view1, 2GB for view2
 
         for (let i = 0; i < totalBlocks; i++) {
           const progress = i / (totalBlocks - 1);
           const blockNumber = i + 1;
-          const size = 1 + (i * 1999 / 99); // Linear progression: 1MB to 2000MB (2GB)
+          
+          // Different scaling based on mode
+          let size;
+          if (viewMode === 'view1') {
+            size = blockNumber; // 1MB to 14MB
+          } else {
+            // Exponential growth to reach 2GB
+            size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
+          }
 
-          // ULTRA DRAMATIC scaling - each block gets MASSIVELY bigger!
-          const visualScale = Math.pow(progress + 0.01, 2) * 2; // Quadratic growth
-          const clampedScale = Math.max(0.1, Math.min(5.0, visualScale));
+          // Linear proportional scaling - blocks are directly proportional to their size
+          const baseScale = viewMode === 'view1' ? 0.5 : 0.01; // Different scale for each view
+          const visualScale = size * baseScale;
+          const clampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, visualScale));
 
           // Calculate position with small gaps and first block above pie chart at bottom
-          const gap = 0.2; // Small gap between blocks
+          const gap = 0.5; // Visible gap between blocks
           let y = -23; // Start just above pie chart (which is at Y=-25)
 
           for (let j = 0; j < i; j++) {
             const prevProgress = j / (totalBlocks - 1);
-            const prevScale = Math.pow(prevProgress + 0.01, 2) * 2;
-            const prevClampedScale = Math.max(0.1, Math.min(5.0, prevScale));
+            let prevSize;
+            if (viewMode === 'view1') {
+              prevSize = j + 1; // 1MB to 14MB
+            } else {
+              prevSize = Math.round(1 + (maxSize - 1) * Math.pow(prevProgress, 2));
+            }
+            const prevVisualScale = prevSize * baseScale;
+            const prevClampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, prevVisualScale));
             y += prevClampedScale + gap; // Add height + small gap for each previous block
           }
 
           // Add pulsing for the biggest blocks
-          const isBigBlock = clampedScale > 2.5;
+          const isBigBlock = size >= 80; // Pulse for 80MB+ blocks
 
             blocks.push(
               <group key={`block-${i}`} position={[0, y, 0]}>
@@ -280,7 +416,7 @@ function MiningPoolPieChart() {
                 anchorX="left"
                 anchorY="middle"
               >
-                {i === 0 ? '1MB' : size < 1000 ? `${Math.round(size)}MB` : `${(size/1000).toFixed(1)}GB`}
+                {size < 1000 ? `${size}MB` : `${(size/1000).toFixed(1)}GB`}
               </Text>
             </group>
           );
@@ -292,14 +428,23 @@ function MiningPoolPieChart() {
       {/* Timeline that follows the actual block positions with gaps */}
       {(() => {
         const timelinePoints = [0, -23, 0]; // Start above pie chart at bottom
-        const gap = 0.2;
+        const gap = 0.5; // Same gap as blocks
         let currentY = -23; // Start from first block position
+        const totalBlocks = viewMode === 'view1' ? 14 : 100;
+        const maxSize = viewMode === 'view1' ? 14 : 2000;
+        const baseScale = viewMode === 'view1' ? 0.5 : 0.01;
 
-        for (let i = 1; i <= 50; i++) { // Sample points for smooth line
-          const progress = i / 50;
-          const scale = Math.pow(progress + 0.01, 2) * 2;
-          const clampedScale = Math.max(0.1, Math.min(5.0, scale));
-          currentY += (clampedScale + gap) / 50; // Include gap in smooth interpolation
+        for (let i = 1; i <= totalBlocks; i++) { // All blocks for accurate line
+          const progress = (i - 1) / (totalBlocks - 1);
+          let size;
+          if (viewMode === 'view1') {
+            size = i; // 1MB to 14MB
+          } else {
+            size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
+          }
+          const visualScale = size * baseScale;
+          const clampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, visualScale));
+          currentY += clampedScale + gap;
           timelinePoints.push(0, currentY, 0);
         }
 
@@ -318,13 +463,23 @@ function MiningPoolPieChart() {
 
       {/* Final massive block marker */}
       {(() => {
-        const gap = 0.2;
+        const gap = 0.5; // Same gap as blocks
         let totalHeight = -23; // Start from first block position
-        for (let i = 0; i < 100; i++) {
-          const progress = i / 99;
-          const scale = Math.pow(progress + 0.01, 2) * 2;
-          const clampedScale = Math.max(0.1, Math.min(5.0, scale));
-          if (i < 99) { // Don't add gap after the last block
+        const totalBlocks = viewMode === 'view1' ? 14 : 100;
+        const maxSize = viewMode === 'view1' ? 14 : 2000;
+        const baseScale = viewMode === 'view1' ? 0.5 : 0.01;
+        
+        for (let i = 0; i < totalBlocks; i++) {
+          const progress = i / (totalBlocks - 1);
+          let size;
+          if (viewMode === 'view1') {
+            size = i + 1; // 1MB to 14MB
+          } else {
+            size = Math.round(1 + (maxSize - 1) * Math.pow(progress, 2));
+          }
+          const visualScale = size * baseScale;
+          const clampedScale = Math.max(0.5, Math.min(viewMode === 'view1' ? 7.0 : 20.0, visualScale));
+          if (i < totalBlocks - 1) { // Don't add gap after the last block
             totalHeight += clampedScale + gap;
           } else {
             totalHeight += clampedScale;
@@ -339,7 +494,7 @@ function MiningPoolPieChart() {
             anchorX="center"
             anchorY="middle"
           >
-            FINAL BLOCK • 2GB
+            {viewMode === 'view1' ? 'FINAL BLOCK • 14MB' : 'FINAL BLOCK • 2GB'}
           </Text>
         );
       })()}
@@ -348,84 +503,286 @@ function MiningPoolPieChart() {
 }
 
 export default function BlockchainVisualizer() {
-  const [spacePressed, setSpacePressed] = React.useState(false);
+  const controlsRef = useRef<any>(null)
+  const [viewMode, setViewMode] = React.useState<'view1' | 'view2'>('view1')
 
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code === 'Space') {
-        event.preventDefault();
-        setSpacePressed(true);
-      }
-    };
+  const resetView = () => {
+    if (controlsRef.current) {
+      // Reset to base view with pie chart at bottom center
+      controlsRef.current.target.set(0, -10, 0)  // Look slightly above the pie chart
+      controlsRef.current.object.position.set(0, 10, 80)  // Camera positioned higher and back
+      controlsRef.current.update()
+    }
+  }
 
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.code === 'Space') {
-        setSpacePressed(false);
-      }
-    };
+  const viewFullChain = () => {
+    if (controlsRef.current) {
+      // View entire chain from distance
+      controlsRef.current.target.set(0, 500, 0)
+      controlsRef.current.object.position.set(0, 500, 1500)
+      controlsRef.current.update()
+    }
+  }
 
-    // Add listeners to document instead of window for better canvas compatibility
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
+  const viewMiddle = () => {
+    if (controlsRef.current) {
+      // View middle section of chain
+      controlsRef.current.target.set(0, 250, 0)
+      controlsRef.current.object.position.set(0, 250, 400)
+      controlsRef.current.update()
+    }
+  }
 
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
+  const viewTop = () => {
+    if (controlsRef.current) {
+      // View top of chain (100MB blocks)
+      controlsRef.current.target.set(0, 950, 0)
+      controlsRef.current.object.position.set(0, 950, 200)
+      controlsRef.current.update()
+    }
+  }
 
   return (
-    <div className="w-full h-screen relative" style={{ background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)' }}>
+    <div className="w-full h-screen relative pl-96" style={{ background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)' }}>
+      {/* View Mode Tabs - Top Center */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/90 backdrop-blur-md rounded-lg border border-[#00ff88]/30 flex">
+        <button
+          onClick={() => setViewMode('view1')}
+          className={`px-6 py-2 rounded-l-lg font-mono text-sm transition-all ${
+            viewMode === 'view1' 
+              ? 'bg-[#00ff88]/30 text-[#00ff88] border-r border-[#00ff88]/30' 
+              : 'text-gray-400 hover:text-[#00ff88] hover:bg-[#00ff88]/10'
+          }`}
+        >
+          📦 View 1 (1-14MB)
+        </button>
+        <button
+          onClick={() => setViewMode('view2')}
+          className={`px-6 py-2 rounded-r-lg font-mono text-sm transition-all ${
+            viewMode === 'view2' 
+              ? 'bg-[#00ff88]/30 text-[#00ff88] border-l border-[#00ff88]/30' 
+              : 'text-gray-400 hover:text-[#00ff88] hover:bg-[#00ff88]/10'
+          }`}
+        >
+          🚀 View 2 (up to 2GB)
+        </button>
+      </div>
+
       <Canvas
-        camera={{ position: [0, 35, 50], fov: 55 }}
+        camera={{ position: [0, 500, 1500], fov: 55 }}
         onCreated={({ gl }) => {
           // Ensure canvas doesn't capture keyboard events
           gl.domElement.tabIndex = -1;
         }}
       >
         <MiningPoolPieChart />
+        <BlockchainBlocks viewMode={viewMode} />
         <OrbitControls
+          ref={controlsRef}
           enableDamping
-          dampingFactor={0.05}
-          enablePan={spacePressed}
-          enableRotate={!spacePressed}
+          dampingFactor={0.1}
+          enablePan={false}     // Disable panning for simpler controls
+          enableRotate={true}
           enableZoom={true}
-          target={[0, -17, 0]} // Focus zoom on mining pool balls area
-          minDistance={5}     // Minimum zoom distance
-          maxDistance={200}   // Maximum zoom distance
+          zoomToCursor={false}  // Standard zoom behavior
+          target={[0, -10, 0]}  // Start focused on base
+          minDistance={20}      // Minimum zoom distance
+          maxDistance={2000}    // Much larger max distance to see entire chain
           maxPolarAngle={Math.PI / 2} // Prevent going below ground
+          rotateSpeed={0.5}     // Slower rotation for better control
+          zoomSpeed={1.0}       // Standard zoom speed
         />
         <ambientLight intensity={0.6} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <pointLight position={[0, 5, 0]} intensity={0.3} />
+
       </Canvas>
 
-      {/* Info Panel */}
-      <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-md p-4 rounded-lg text-[#00ff88] font-mono text-sm border border-[#00ff88]/20">
-        <h3 className="text-lg font-bold mb-2">📊 BTC Mining Pools</h3>
-        <p>6 Major Pools</p>
-        <p className="text-yellow-400 font-bold">⛓️ BLOCKCHAIN ABOVE PIE CHART</p>
-        <p className="text-xs mt-1">Pie chart below the chain!</p>
-        <div className="text-xs mt-2 space-y-1">
-          <p>📊 100 blocks with small gaps</p>
-          <p>🎯 Block #1 (1MB) above pie chart</p>
-          <p>⏰ Every 10 minutes: +1 block</p>
-          <p>📈 Size: 1MB → 40MB → 80MB → ... → 2GB</p>
-          <p>💎 Quadratic growth scaling</p>
-          <p>✨ Pulsing glow on big blocks</p>
-          <p>🏮 Floating colored mining balls</p>
-          <p className="text-cyan-400">🔍 Fixed pie chart size</p>
-          <p className="text-yellow-400">⚡ Normal zoom controls</p>
+      {/* FULL LEFT SIDE Mining Pool Information Panel */}
+      <div className="absolute top-0 left-0 w-96 h-full bg-black/95 backdrop-blur-md p-4 text-white font-mono text-xs border-r border-blue-500/30 overflow-y-auto">
+        <h3 className="text-blue-400 font-bold mb-3 flex items-center gap-2 text-sm">
+          ⛏️ BTC MINING POOLS
+        </h3>
+
+        {/* Total Hash Rate */}
+        <div className="mb-3 p-2 bg-blue-900/30 rounded border border-blue-500/20">
+          <div className="text-cyan-400 font-bold text-sm">🌐 TOTAL NETWORK</div>
+          <div className="text-yellow-400 text-lg font-bold">~680 EH/s</div>
+        </div>
+
+        {/* All Pools - sized proportionally with harmonious colors */}
+        <div className="space-y-1">
+          {/* AntPool - Largest */}
+          <div className="p-3 rounded" style={{ backgroundColor: 'rgba(255, 0, 0, 0.2)', borderLeft: '4px solid #FF0000' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-lg" style={{ color: '#FF0000' }}>AntPool</span>
+              <span className="text-white font-bold text-lg">18.5%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~126 EH/s</div>
+          </div>
+
+          {/* Poolin */}
+          <div className="p-2.5 rounded" style={{ backgroundColor: 'rgba(255, 51, 0, 0.2)', borderLeft: '4px solid #FF3300' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-base" style={{ color: '#FF3300' }}>Poolin</span>
+              <span className="text-white font-bold text-base">15.2%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~103 EH/s</div>
+          </div>
+
+          {/* BTC.com */}
+          <div className="p-2.5 rounded" style={{ backgroundColor: 'rgba(255, 102, 0, 0.2)', borderLeft: '4px solid #FF6600' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-base" style={{ color: '#FF6600' }}>BTC.com</span>
+              <span className="text-white font-bold text-base">12.8%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~87 EH/s</div>
+          </div>
+
+          {/* F2Pool */}
+          <div className="p-2 rounded" style={{ backgroundColor: 'rgba(255, 153, 0, 0.2)', borderLeft: '4px solid #FF9900' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold" style={{ color: '#FF9900' }}>F2Pool</span>
+              <span className="text-white font-bold">10.3%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~70 EH/s</div>
+          </div>
+
+          {/* Binance */}
+          <div className="p-2 rounded" style={{ backgroundColor: 'rgba(255, 204, 0, 0.2)', borderLeft: '4px solid #FFCC00' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold" style={{ color: '#FFCC00' }}>Binance</span>
+              <span className="text-white font-bold">8.9%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~61 EH/s</div>
+          </div>
+
+          {/* Foundry USA */}
+          <div className="p-1.5 rounded" style={{ backgroundColor: 'rgba(255, 255, 0, 0.2)', borderLeft: '4px solid #FFFF00' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-sm" style={{ color: '#FFFF00' }}>Foundry USA</span>
+              <span className="text-white font-bold text-sm">6.0%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~41 EH/s</div>
+          </div>
+
+          {/* ViaBTC */}
+          <div className="p-1.5 rounded" style={{ backgroundColor: 'rgba(204, 255, 0, 0.2)', borderLeft: '4px solid #CCFF00' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-sm" style={{ color: '#CCFF00' }}>ViaBTC</span>
+              <span className="text-white font-bold text-sm">4.5%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~31 EH/s</div>
+          </div>
+
+          {/* Braiins */}
+          <div className="p-1.5 rounded" style={{ backgroundColor: 'rgba(153, 255, 0, 0.2)', borderLeft: '4px solid #99FF00' }}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-sm" style={{ color: '#99FF00' }}>Braiins</span>
+              <span className="text-white font-bold text-sm">3.5%</span>
+            </div>
+            <div className="text-gray-300 text-xs">~24 EH/s</div>
+          </div>
+
+          {/* Luxor */}
+          <div className="p-1 rounded" style={{ backgroundColor: 'rgba(102, 255, 0, 0.2)', borderLeft: '3px solid #66FF00' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-sm" style={{ color: '#66FF00' }}>Luxor</span>
+              <span className="text-white text-sm">2.8%</span>
+            </div>
+          </div>
+
+          {/* BitFury */}
+          <div className="p-1 rounded" style={{ backgroundColor: 'rgba(0, 255, 0, 0.2)', borderLeft: '3px solid #00FF00' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-sm" style={{ color: '#00FF00' }}>BitFury</span>
+              <span className="text-white text-sm">2.5%</span>
+            </div>
+          </div>
+
+          {/* SBI Crypto */}
+          <div className="p-1 rounded" style={{ backgroundColor: 'rgba(51, 255, 0, 0.2)', borderLeft: '3px solid #33FF00' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-sm" style={{ color: '#33FF00' }}>SBI Crypto</span>
+              <span className="text-white text-sm">2.2%</span>
+            </div>
+          </div>
+
+          {/* Kano CKPool */}
+          <div className="p-1 rounded" style={{ backgroundColor: 'rgba(0, 255, 51, 0.2)', borderLeft: '3px solid #00FF33' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-sm" style={{ color: '#00FF33' }}>Kano CKPool</span>
+              <span className="text-white text-sm">2.0%</span>
+            </div>
+          </div>
+
+          {/* SpiderPool */}
+          <div className="p-1 rounded" style={{ backgroundColor: 'rgba(0, 255, 102, 0.2)', borderLeft: '2px solid #00FF66' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-xs" style={{ color: '#00FF66' }}>SpiderPool</span>
+              <span className="text-white text-xs">1.8%</span>
+            </div>
+          </div>
+
+          {/* Huobi Pool */}
+          <div className="p-1 rounded" style={{ backgroundColor: 'rgba(0, 255, 153, 0.2)', borderLeft: '2px solid #00FF99' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-xs" style={{ color: '#00FF99' }}>Huobi Pool</span>
+              <span className="text-white text-xs">1.5%</span>
+            </div>
+          </div>
+
+          {/* Remaining small pools */}
+          <div className="p-0.5 rounded" style={{ backgroundColor: 'rgba(51, 0, 255, 0.1)', borderLeft: '2px solid #3300FF' }}>
+            <div className="flex justify-between items-center">
+              <span className="text-xs" style={{ color: '#3300FF' }}>Others (7 pools)</span>
+              <span className="text-white text-xs">6.5%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Quick Navigation Panel - Right Side */}
+      <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/90 backdrop-blur-md p-2 rounded-lg border border-[#00ff88]/30 flex flex-col gap-2">
+        <button
+          onClick={viewFullChain}
+          className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
+          title="View entire blockchain"
+        >
+          📊 Full Chain
+        </button>
+        <button
+          onClick={viewTop}
+          className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
+          title="View largest blocks (100MB)"
+        >
+          🔝 Top (100MB)
+        </button>
+        <button
+          onClick={viewMiddle}
+          className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
+          title="View middle section (~50MB)"
+        >
+          🎯 Middle (50MB)
+        </button>
+        <button
+          onClick={resetView}
+          className="px-3 py-2 rounded text-[#00ff88] font-mono text-xs border border-[#00ff88]/30 hover:bg-[#00ff88]/20 hover:border-[#00ff88]/50 transition-all cursor-pointer"
+          title="View base with pie chart"
+        >
+          🥧 Base (1MB)
+        </button>
+      </div>
+
+      {/* Simple Controls Info - Top Right */}
+      <div className="absolute top-4 right-4 bg-black/90 backdrop-blur-md px-3 py-2 rounded-lg text-[#00ff88] font-mono text-xs border border-[#00ff88]/30">
+        <div className="space-y-1">
+          <div>🖱️ Drag: Rotate</div>
+          <div>⚙️ Scroll: Zoom</div>
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md p-4 rounded-lg text-[#00ff88] font-mono text-sm border border-[#00ff88]/20">
-        <p>Mouse: Orbit around pie chart</p>
-        <p>Space + Mouse: Pan/Drag</p>
-        <p>Scroll: Zoom to pie chart center</p>
-        <p className="text-xs mt-1 opacity-75">🎯 Zoom focuses on pie chart</p>
-      </div>
     </div>
   )
 
