@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1000">
+  <rect width="2000" height="1000" fill="transparent"/>
+  <!-- North America -->
+  <path d="M 300 200 Q 400 180 500 220 Q 540 300 460 400 Q 340 360 260 260 Z" fill="rgba(26,77,26,0.3)" stroke="#1a4d1a" stroke-width="2"/>
+  <!-- South America -->
+  <path d="M 460 520 Q 500 560 520 640 Q 500 760 460 800 Q 420 720 400 600 Z" fill="rgba(26,77,26,0.3)" stroke="#1a4d1a" stroke-width="2"/>
+  <!-- Africa -->
+  <path d="M 900 300 Q 1000 340 1040 460 Q 1000 620 900 700 Q 840 540 820 400 Z" fill="rgba(26,77,26,0.3)" stroke="#1a4d1a" stroke-width="2"/>
+  <!-- Europe -->
+  <path d="M 880 180 Q 960 160 1000 200 Q 960 240 900 220 Z" fill="rgba(26,77,26,0.3)" stroke="#1a4d1a" stroke-width="2"/>
+  <!-- Asia -->
+  <path d="M 1100 160 Q 1300 200 1500 280 Q 1600 360 1560 480 Q 1400 440 1200 320 Q 1120 240 1100 160 Z" fill="rgba(26,77,26,0.3)" stroke="#1a4d1a" stroke-width="2"/>
+  <!-- Australia -->
+  <path d="M 1400 700 Q 1520 720 1560 780 Q 1500 820 1400 800 Q 1360 740 1400 700 Z" fill="rgba(26,77,26,0.3)" stroke="#1a4d1a" stroke-width="2"/>
+</svg>

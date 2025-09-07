@@ -253,109 +253,112 @@ function MiningPoolPieChart() {
 }
 
 function MeshNetwork() {
+  const [mapTexture, setMapTexture] = React.useState<THREE.Texture | null>(null)
+  
+  React.useEffect(() => {
+    const loader = new THREE.TextureLoader()
+    loader.load(
+      '/world-map.svg',
+      (texture) => {
+        setMapTexture(texture)
+      },
+      undefined,
+      () => {
+        // If SVG fails, create canvas texture
+        const canvas = document.createElement('canvas')
+        canvas.width = 2000
+        canvas.height = 1000
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          // Clear canvas
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+          
+          // Set styles
+          ctx.strokeStyle = '#1a4d1a'
+          ctx.fillStyle = 'rgba(26, 77, 26, 0.3)'
+          ctx.lineWidth = 2
+          
+          // North America
+          ctx.beginPath()
+          ctx.moveTo(300, 200)
+          ctx.quadraticCurveTo(400, 180, 500, 220)
+          ctx.quadraticCurveTo(540, 300, 460, 400)
+          ctx.quadraticCurveTo(340, 360, 260, 260)
+          ctx.closePath()
+          ctx.fill()
+          ctx.stroke()
+          
+          // South America
+          ctx.beginPath()
+          ctx.moveTo(460, 520)
+          ctx.quadraticCurveTo(500, 560, 520, 640)
+          ctx.quadraticCurveTo(500, 760, 460, 800)
+          ctx.quadraticCurveTo(420, 720, 400, 600)
+          ctx.closePath()
+          ctx.fill()
+          ctx.stroke()
+          
+          // Africa
+          ctx.beginPath()
+          ctx.moveTo(900, 300)
+          ctx.quadraticCurveTo(1000, 340, 1040, 460)
+          ctx.quadraticCurveTo(1000, 620, 900, 700)
+          ctx.quadraticCurveTo(840, 540, 820, 400)
+          ctx.closePath()
+          ctx.fill()
+          ctx.stroke()
+          
+          // Europe
+          ctx.beginPath()
+          ctx.moveTo(880, 180)
+          ctx.quadraticCurveTo(960, 160, 1000, 200)
+          ctx.quadraticCurveTo(960, 240, 900, 220)
+          ctx.closePath()
+          ctx.fill()
+          ctx.stroke()
+          
+          // Asia
+          ctx.beginPath()
+          ctx.moveTo(1100, 160)
+          ctx.quadraticCurveTo(1300, 200, 1500, 280)
+          ctx.quadraticCurveTo(1600, 360, 1560, 480)
+          ctx.quadraticCurveTo(1400, 440, 1200, 320)
+          ctx.quadraticCurveTo(1120, 240, 1100, 160)
+          ctx.closePath()
+          ctx.fill()
+          ctx.stroke()
+          
+          // Australia
+          ctx.beginPath()
+          ctx.moveTo(1400, 700)
+          ctx.quadraticCurveTo(1520, 720, 1560, 780)
+          ctx.quadraticCurveTo(1500, 820, 1400, 800)
+          ctx.quadraticCurveTo(1360, 740, 1400, 700)
+          ctx.closePath()
+          ctx.fill()
+          ctx.stroke()
+        }
+        
+        const texture = new THREE.CanvasTexture(canvas)
+        setMapTexture(texture)
+      }
+    )
+  }, [])
+  
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
-      {/* World map using a texture */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.1, 0]}>
-        <planeGeometry args={[120, 60]} />
-        <meshBasicMaterial 
-          map={(() => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 1200;
-            canvas.height = 600;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              // Draw a simple world map outline
-              ctx.fillStyle = 'rgba(26, 77, 26, 0.3)';
-              ctx.strokeStyle = 'rgba(26, 77, 26, 0.8)';
-              ctx.lineWidth = 2;
-              
-              // North America
-              ctx.beginPath();
-              ctx.moveTo(200, 150);
-              ctx.lineTo(250, 140);
-              ctx.lineTo(300, 160);
-              ctx.lineTo(320, 200);
-              ctx.lineTo(280, 250);
-              ctx.lineTo(220, 230);
-              ctx.lineTo(180, 180);
-              ctx.closePath();
-              ctx.fill();
-              ctx.stroke();
-              
-              // South America
-              ctx.beginPath();
-              ctx.moveTo(280, 320);
-              ctx.lineTo(300, 340);
-              ctx.lineTo(310, 380);
-              ctx.lineTo(300, 440);
-              ctx.lineTo(280, 460);
-              ctx.lineTo(260, 420);
-              ctx.lineTo(250, 360);
-              ctx.closePath();
-              ctx.fill();
-              ctx.stroke();
-              
-              // Africa
-              ctx.beginPath();
-              ctx.moveTo(550, 200);
-              ctx.lineTo(600, 220);
-              ctx.lineTo(620, 280);
-              ctx.lineTo(600, 360);
-              ctx.lineTo(580, 400);
-              ctx.lineTo(550, 380);
-              ctx.lineTo(520, 320);
-              ctx.lineTo(510, 250);
-              ctx.closePath();
-              ctx.fill();
-              ctx.stroke();
-              
-              // Europe
-              ctx.beginPath();
-              ctx.moveTo(540, 140);
-              ctx.lineTo(580, 130);
-              ctx.lineTo(600, 150);
-              ctx.lineTo(580, 170);
-              ctx.lineTo(550, 160);
-              ctx.closePath();
-              ctx.fill();
-              ctx.stroke();
-              
-              // Asia
-              ctx.beginPath();
-              ctx.moveTo(650, 120);
-              ctx.lineTo(750, 140);
-              ctx.lineTo(850, 180);
-              ctx.lineTo(900, 220);
-              ctx.lineTo(880, 280);
-              ctx.lineTo(800, 260);
-              ctx.lineTo(700, 200);
-              ctx.lineTo(650, 160);
-              ctx.closePath();
-              ctx.fill();
-              ctx.stroke();
-              
-              // Australia
-              ctx.beginPath();
-              ctx.moveTo(800, 400);
-              ctx.lineTo(860, 410);
-              ctx.lineTo(880, 440);
-              ctx.lineTo(850, 460);
-              ctx.lineTo(800, 450);
-              ctx.lineTo(780, 420);
-              ctx.closePath();
-              ctx.fill();
-              ctx.stroke();
-            }
-            
-            const texture = new THREE.CanvasTexture(canvas);
-            return texture;
-          })()}
-          transparent
-          opacity={0.6}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {/* World map with UV mapping */}
+      {mapTexture && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.2, 0]}>
+          <planeGeometry args={[100, 50]} />
+          <meshBasicMaterial 
+            map={mapTexture}
+            transparent={true}
+            opacity={0.8}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      )}
       
       {/* Create a simple mesh network grid */}
       {(() => {
