@@ -253,42 +253,17 @@ function MiningPoolPieChart() {
 }
 
 function MeshNetwork() {
-  const txLineRef = useRef<any>(null)
+  // Define the two specific node positions from the grid
+  const gridSize = 25
+  const spacing = 5
+  const extent = (gridSize - 1) * spacing / 2
   
-  // Animate the transaction line
-  useFrame((state) => {
-    if (txLineRef.current) {
-      // Pulse the transaction line opacity
-      const opacity = 0.5 + Math.sin(state.clock.elapsedTime * 3) * 0.5
-      if (txLineRef.current.material) {
-        txLineRef.current.material.opacity = opacity
-      }
-    }
-  })
+  // Pick two specific grid positions for our transaction nodes
+  const node1Pos = [-extent + 5 * spacing, 0, -extent + 8 * spacing] // Grid position [5, 8]
+  const node2Pos = [-extent + 18 * spacing, 0, -extent + 16 * spacing] // Grid position [18, 16]
   
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
-      
-      {/* Two white nodes representing transaction endpoints */}
-      <mesh position={[-30, 0.5, -20]}>
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshBasicMaterial color="#ffffff" />
-      </mesh>
-      
-      <mesh position={[25, 0.5, 15]}>
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshBasicMaterial color="#ffffff" />
-      </mesh>
-      
-      {/* Transaction line between nodes */}
-      <Line
-        ref={txLineRef}
-        points={[[-30, 0.5, -20], [25, 0.5, 15]]}
-        color="#00ff00"
-        lineWidth={3}
-        dashed={false}
-        transparent={true}
-      />
       
       {/* Create a simple mesh network grid */}
       {(() => {
@@ -337,10 +312,12 @@ function MeshNetwork() {
           for (let j = 0; j < gridSize; j++) {
             const x = -extent + i * spacing;
             const z = -extent + j * spacing;
+            // Make two specific nodes white for transaction visualization
+            const isSpecialNode = (i === 5 && j === 8) || (i === 18 && j === 16);
             nodes.push(
               <mesh key={`node-${i}-${j}`} position={[x, 0, z]}>
-                <sphereGeometry args={[0.2, 8, 8]} />
-                <meshBasicMaterial color="#000000" />
+                <sphereGeometry args={[isSpecialNode ? 0.5 : 0.2, 8, 8]} />
+                <meshBasicMaterial color={isSpecialNode ? "#ffffff" : "#000000"} />
               </mesh>
             );
           }
@@ -348,6 +325,14 @@ function MeshNetwork() {
         
         return [...lines, ...nodes];
       })()}
+      
+      {/* Transaction line between the two white nodes */}
+      <Line
+        points={[node1Pos, node2Pos]}
+        color="#00ff00"
+        lineWidth={2}
+        dashed={false}
+      />
     </group>
   );
 }
