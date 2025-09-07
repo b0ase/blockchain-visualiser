@@ -1,7 +1,7 @@
 
 'use client'
 
-import React, { useRef, useMemo } from 'react'
+import React, { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Text, Line } from '@react-three/drei'
 import * as THREE from 'three'
@@ -253,130 +253,109 @@ function MiningPoolPieChart() {
 }
 
 function MeshNetwork() {
-  // Create continent outlines
-  const continents = useMemo(() => {
-    const shapes = []
-    
-    // North America outline
-    const northAmerica = new THREE.Shape()
-    northAmerica.moveTo(-50, -30)
-    northAmerica.lineTo(-45, -28)
-    northAmerica.lineTo(-40, -30)
-    northAmerica.lineTo(-35, -25)
-    northAmerica.lineTo(-30, -20)
-    northAmerica.lineTo(-28, -15)
-    northAmerica.lineTo(-25, -10)
-    northAmerica.lineTo(-27, -8)
-    northAmerica.lineTo(-30, -10)
-    northAmerica.lineTo(-35, -15)
-    northAmerica.lineTo(-40, -18)
-    northAmerica.lineTo(-45, -22)
-    northAmerica.lineTo(-48, -28)
-    northAmerica.closePath()
-    shapes.push(northAmerica)
-    
-    // South America outline  
-    const southAmerica = new THREE.Shape()
-    southAmerica.moveTo(-30, -5)
-    southAmerica.lineTo(-28, -2)
-    southAmerica.lineTo(-25, 0)
-    southAmerica.lineTo(-23, 5)
-    southAmerica.lineTo(-22, 10)
-    southAmerica.lineTo(-21, 15)
-    southAmerica.lineTo(-22, 20)
-    southAmerica.lineTo(-23, 22)
-    southAmerica.lineTo(-25, 20)
-    southAmerica.lineTo(-27, 15)
-    southAmerica.lineTo(-28, 10)
-    southAmerica.lineTo(-29, 5)
-    southAmerica.lineTo(-30, 0)
-    southAmerica.closePath()
-    shapes.push(southAmerica)
-    
-    // Africa outline
-    const africa = new THREE.Shape()
-    africa.moveTo(-5, -20)
-    africa.lineTo(0, -18)
-    africa.lineTo(5, -15)
-    africa.lineTo(10, -10)
-    africa.lineTo(12, -5)
-    africa.lineTo(10, 0)
-    africa.lineTo(8, 5)
-    africa.lineTo(7, 10)
-    africa.lineTo(5, 15)
-    africa.lineTo(3, 18)
-    africa.lineTo(0, 20)
-    africa.lineTo(-3, 18)
-    africa.lineTo(-5, 15)
-    africa.lineTo(-6, 10)
-    africa.lineTo(-5, 5)
-    africa.lineTo(-3, 0)
-    africa.lineTo(-2, -5)
-    africa.lineTo(-3, -10)
-    africa.lineTo(-5, -15)
-    africa.closePath()
-    shapes.push(africa)
-    
-    // Europe outline
-    const europe = new THREE.Shape()
-    europe.moveTo(0, -35)
-    europe.lineTo(5, -33)
-    europe.lineTo(10, -35)
-    europe.lineTo(15, -32)
-    europe.lineTo(12, -30)
-    europe.lineTo(10, -28)
-    europe.lineTo(5, -30)
-    europe.lineTo(2, -32)
-    europe.closePath()
-    shapes.push(europe)
-    
-    // Asia outline
-    const asia = new THREE.Shape()
-    asia.moveTo(15, -30)
-    asia.lineTo(25, -28)
-    asia.lineTo(35, -25)
-    asia.lineTo(45, -20)
-    asia.lineTo(50, -15)
-    asia.lineTo(55, -10)
-    asia.lineTo(52, -5)
-    asia.lineTo(48, 0)
-    asia.lineTo(45, -3)
-    asia.lineTo(40, -5)
-    asia.lineTo(35, -10)
-    asia.lineTo(30, -15)
-    asia.lineTo(25, -20)
-    asia.lineTo(20, -25)
-    asia.lineTo(15, -28)
-    asia.closePath()
-    shapes.push(asia)
-    
-    // Australia outline
-    const australia = new THREE.Shape()
-    australia.moveTo(35, 15)
-    australia.lineTo(40, 13)
-    australia.lineTo(45, 15)
-    australia.lineTo(48, 18)
-    australia.lineTo(45, 20)
-    australia.lineTo(40, 22)
-    australia.lineTo(35, 20)
-    australia.lineTo(33, 18)
-    australia.closePath()
-    shapes.push(australia)
-    
-    return shapes
-  }, [])
-  
   return (
     <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
-      {/* World map continent outlines */}
-      <group position={[0, 0.3, 0]}>
-        {continents.map((shape, i) => (
-          <mesh key={i} rotation={[-Math.PI / 2, 0, 0]}>
-            <shapeGeometry args={[shape]} />
-            <meshBasicMaterial color="#1a4d1a" opacity={0.4} transparent side={THREE.DoubleSide} />
-          </mesh>
-        ))}
-      </group>
+      {/* World map using a texture */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.1, 0]}>
+        <planeGeometry args={[120, 60]} />
+        <meshBasicMaterial 
+          map={(() => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 600;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              // Draw a simple world map outline
+              ctx.fillStyle = 'rgba(26, 77, 26, 0.3)';
+              ctx.strokeStyle = 'rgba(26, 77, 26, 0.8)';
+              ctx.lineWidth = 2;
+              
+              // North America
+              ctx.beginPath();
+              ctx.moveTo(200, 150);
+              ctx.lineTo(250, 140);
+              ctx.lineTo(300, 160);
+              ctx.lineTo(320, 200);
+              ctx.lineTo(280, 250);
+              ctx.lineTo(220, 230);
+              ctx.lineTo(180, 180);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              
+              // South America
+              ctx.beginPath();
+              ctx.moveTo(280, 320);
+              ctx.lineTo(300, 340);
+              ctx.lineTo(310, 380);
+              ctx.lineTo(300, 440);
+              ctx.lineTo(280, 460);
+              ctx.lineTo(260, 420);
+              ctx.lineTo(250, 360);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              
+              // Africa
+              ctx.beginPath();
+              ctx.moveTo(550, 200);
+              ctx.lineTo(600, 220);
+              ctx.lineTo(620, 280);
+              ctx.lineTo(600, 360);
+              ctx.lineTo(580, 400);
+              ctx.lineTo(550, 380);
+              ctx.lineTo(520, 320);
+              ctx.lineTo(510, 250);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              
+              // Europe
+              ctx.beginPath();
+              ctx.moveTo(540, 140);
+              ctx.lineTo(580, 130);
+              ctx.lineTo(600, 150);
+              ctx.lineTo(580, 170);
+              ctx.lineTo(550, 160);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              
+              // Asia
+              ctx.beginPath();
+              ctx.moveTo(650, 120);
+              ctx.lineTo(750, 140);
+              ctx.lineTo(850, 180);
+              ctx.lineTo(900, 220);
+              ctx.lineTo(880, 280);
+              ctx.lineTo(800, 260);
+              ctx.lineTo(700, 200);
+              ctx.lineTo(650, 160);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              
+              // Australia
+              ctx.beginPath();
+              ctx.moveTo(800, 400);
+              ctx.lineTo(860, 410);
+              ctx.lineTo(880, 440);
+              ctx.lineTo(850, 460);
+              ctx.lineTo(800, 450);
+              ctx.lineTo(780, 420);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            }
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            return texture;
+          })()}
+          transparent
+          opacity={0.6}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
       
       {/* Create a simple mesh network grid */}
       {(() => {
