@@ -115,53 +115,60 @@ function MiningPoolPieChart() {
           </Text>
         </group>
 
-        {/* Floating mining pool balls above each slice */}
-        {miningPools.map((pool, index) => {
-          // Calculate the starting angle for this slice (matching pie chart rendering)
-          const cumulativePercentage = miningPools.slice(0, index).reduce((sum, p) => sum + p.percentage, 0)
-          const startAngle = (cumulativePercentage / 100 * Math.PI * 2)
-          // Calculate the middle angle of this slice
-          const sliceAngle = (pool.percentage / 100) * Math.PI * 2
-          const middleAngle = startAngle + sliceAngle / 2
+        {/* SPIRAL OF MINING POOL BALLS - Create sorted array once to avoid duplicate keys */}
+        {(() => {
+          // Create sorted copy to avoid modifying original array
+          const poolsBySize = [...miningPools].sort((a, b) => a.percentage - b.percentage);
 
-          // Scale ball size proportionally to pie slice percentages - MAXIMUM DRAMATIC
-          const minSize = 0.1; // Really small minimum ball size
-          const maxSize = 3.0; // Reasonable maximum ball size
-          // SIMPLE EXACT SCALING: AntPool exactly 18x larger than Tiny Pools
-          let ballSize;
+          return miningPools.map((pool, originalIndex) => {
+            // Scale ball size proportionally to pie slice percentages - MAXIMUM DRAMATIC
+            const minSize = 0.1; // Really small minimum ball size
+            const maxSize = 3.0; // Reasonable maximum ball size
 
-          if (pool.percentage === 18.5) {
-            // AntPool: maximum size
-            ballSize = maxSize;
-          } else if (pool.percentage === 1.4) {
-            // Tiny Pools: exactly 18x smaller than AntPool
-            ballSize = maxSize / 18.0; // 8.0 / 18 = 0.444
-          } else {
-            // Linear interpolation between AntPool (18.5%) and Tiny Pools (1.4%) extremes
-            const antPoolPercent = 18.5;
-            const tinyPoolsPercent = 1.4;
-            const antPoolSize = maxSize;
-            const tinyPoolsSize = maxSize / 18.0;
+            // SIMPLE EXACT SCALING: AntPool exactly 18x larger than Tiny Pools
+            let ballSize;
+            if (pool.percentage === 18.5) {
+              // AntPool: maximum size
+              ballSize = maxSize;
+            } else if (pool.percentage === 1.4) {
+              // Tiny Pools: exactly 18x smaller than AntPool
+              ballSize = maxSize / 18.0; // 3.0 / 18 = 0.167
+            } else {
+              // Linear interpolation between AntPool (18.5%) and Tiny Pools (1.4%) extremes
+              const antPoolPercent = 18.5;
+              const tinyPoolsPercent = 1.4;
+              const antPoolSize = maxSize;
+              const tinyPoolsSize = maxSize / 18.0;
 
-            // Calculate position between the two extremes
-            const ratio = (pool.percentage - tinyPoolsPercent) / (antPoolPercent - tinyPoolsPercent);
-            ballSize = tinyPoolsSize + ratio * (antPoolSize - tinyPoolsSize);
-            ballSize = Math.max(minSize, Math.min(maxSize, ballSize)); // Clamp
-          }
+              // Calculate position between the two extremes
+              const ratio = (pool.percentage - tinyPoolsPercent) / (antPoolPercent - tinyPoolsPercent);
+              ballSize = tinyPoolsSize + ratio * (antPoolSize - tinyPoolsSize);
+              ballSize = Math.max(minSize, Math.min(maxSize, ballSize)); // Clamp
+            }
 
-          // Use the calculated ballSize directly
+            // SPIRAL POSITIONING: Get index from sorted array
+            const poolIndex = poolsBySize.findIndex(p => p.name === pool.name);
 
-          const pieRadius = 7; // Pie chart radius (from cylinderGeometry args)
-          const ballDistance = pieRadius + 2.0 + (ballSize * 0.3); // Scale distance with ball size
-          const height = 8 + (ballSize * 0.5) // Scale height with ball size
+          // Create spiral path from pie chart (Y=0) up to blockchain blocks (Y~80)
+          const totalPools = miningPools.length;
+          const spiralRadius = 12; // Distance from center axis
+          const spiralHeight = 80; // Total height of spiral (matches blockchain blocks)
+          const startHeight = 2; // Start just above pie chart
 
-          // Position the ball at the middle of the slice
-          // Swap X and Z to match pie chart orientation
-          const x = Math.sin(middleAngle) * ballDistance
-          const z = Math.cos(middleAngle) * ballDistance
+          // Calculate position along spiral (from bottom to top)
+          const progress = poolIndex / (totalPools - 1); // 0 to 1
+          const angle = progress * Math.PI * 4; // 4 full rotations
+          const spiralY = startHeight + progress * (spiralHeight - startHeight);
+
+          // Spiral position around Y-axis
+          const x = Math.cos(angle) * spiralRadius;
+          const z = Math.sin(angle) * spiralRadius;
+
+          // Final positioning with ball size scaling
+          const finalHeight = 8 + (ballSize * 0.5); // Scale height with ball size
 
           return (
-            <group key={`miner-${pool.name}`} position={[x, height, z]}>
+            <group key={`miner-${pool.name}-${originalIndex}`} position={[x, spiralY, z]}>
               {/* Mining pool ball - sized by pool percentage */}
               <mesh>
                 <sphereGeometry args={[ballSize, 16, 16]} />
@@ -207,7 +214,8 @@ function MiningPoolPieChart() {
               </Text>
             </group>
           );
-        })}
+        });
+        })()}
       </group>
 
       {/* ONE CHAIN of blocks - getting bigger every 10 minutes! */}
