@@ -197,21 +197,18 @@ function MiningPoolPieChart({ viewMode }: { viewMode: string }) {
               ballSize = Math.max(minSize, Math.min(maxSize, ballSize)); // Clamp
             }
 
-            // Position above corresponding pie slice - MATCH PIE CHART EXACTLY
+            // Position above corresponding pie slice
             const startAngle = miningPools.slice(0, index).reduce((sum, p) => sum + p.percentage, 0) / 100 * Math.PI * 2;
             const poolAngle = (pool.percentage / 100) * Math.PI * 2;
-            const centerAngle = startAngle + poolAngle / 2; // Center of this pool's slice
+            const centerAngle = startAngle + poolAngle / 2;
             
-            // Position in a ring above the pie chart - smaller pools closer to blockchain
-            const radius = 8 + (12 * (1 - index / miningPools.length)); // Smallest pools closest (radius 8), largest furthest (radius 20)
-            // Largest pools (lower index) get highest position
-            const height = 10 + (22 - index * 1.0); // Heights from 32 down to about 10
+            // Position in a ring above the pie chart
+            const radius = 15; // Fixed radius for all pools
+            const height = 5 + index * 2; // Stagger heights
             
-            // The cylinderGeometry creates slices, but we need to reverse the direction
-            // and rotate 180 degrees more (add PI)
-            const reversedAngle = -centerAngle - Math.PI / 2 + Math.PI; // Reverse, rotate 90 clockwise, then 180 more
-            const x = Math.cos(reversedAngle) * radius;
-            const z = Math.sin(reversedAngle) * radius;
+            // Calculate position
+            const x = Math.cos(centerAngle) * radius;
+            const z = Math.sin(centerAngle) * radius;
             const spiralY = height;
 
           return (
