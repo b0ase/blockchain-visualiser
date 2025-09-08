@@ -271,6 +271,140 @@ function MiningPoolPieChart({ viewMode }: { viewMode: string }) {
   )
 }
 
+function SmallWorldMandala() {
+  const groupRef = useRef<THREE.Group>(null)
+  
+  // Rotate the mandala slowly
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.1
+    }
+  })
+  
+  const nodes = []
+  const connections = []
+  
+  // Create mandala pattern with multiple rings
+  const rings = [
+    { radius: 5, count: 6, color: '#ff0000' },
+    { radius: 10, count: 12, color: '#ff6600' },
+    { radius: 15, count: 18, color: '#ffff00' },
+    { radius: 20, count: 24, color: '#00ff00' },
+    { radius: 25, count: 30, color: '#0099ff' },
+    { radius: 30, count: 36, color: '#9900ff' }
+  ]
+  
+  const nodePositions: [number, number, number][] = []
+  
+  // Create nodes in concentric circles
+  rings.forEach((ring, ringIndex) => {
+    for (let i = 0; i < ring.count; i++) {
+      const angle = (i / ring.count) * Math.PI * 2
+      const x = Math.cos(angle) * ring.radius
+      const z = Math.sin(angle) * ring.radius
+      const y = Math.sin(ringIndex * 0.5) * 2 // Slight vertical variation
+      
+      nodePositions.push([x, y, z])
+      
+      nodes.push(
+        <mesh key={`node-${ringIndex}-${i}`} position={[x, y, z]}>
+          <sphereGeometry args={[0.3, 16, 16]} />
+          <meshStandardMaterial color={ring.color} emissive={ring.color} emissiveIntensity={0.3} />
+        </mesh>
+      )
+    }
+  })
+  
+  // Create small-world connections (mostly local with some long-range)
+  nodePositions.forEach((pos1, i) => {
+    // Connect to nearby nodes in same ring
+    if (i < nodePositions.length - 1) {
+      const pos2 = nodePositions[i + 1]
+      connections.push(
+        <Line
+          key={`conn-${i}-${i+1}`}
+          points={[pos1, pos2]}
+          color="#00ff88"
+          lineWidth={0.5}
+          transparent
+          opacity={0.3}
+        />
+      )
+    }
+    
+    // Add some random long-range connections for small-world effect
+    if (Math.random() < 0.05) { // 5% chance of long-range connection
+      const randomIndex = Math.floor(Math.random() * nodePositions.length)
+      if (randomIndex !== i) {
+        connections.push(
+          <Line
+            key={`long-${i}-${randomIndex}`}
+            points={[pos1, nodePositions[randomIndex]]}
+            color="#ff00ff"
+            lineWidth={0.3}
+            transparent
+            opacity={0.2}
+          />
+        )
+      }
+    }
+  })
+  
+  // Connect rings together
+  rings.forEach((ring, ringIndex) => {
+    if (ringIndex < rings.length - 1) {
+      const nextRing = rings[ringIndex + 1]
+      const step = Math.floor(nextRing.count / ring.count)
+      
+      for (let i = 0; i < ring.count; i++) {
+        const angle1 = (i / ring.count) * Math.PI * 2
+        const x1 = Math.cos(angle1) * ring.radius
+        const z1 = Math.sin(angle1) * ring.radius
+        
+        const j = (i * step) % nextRing.count
+        const angle2 = (j / nextRing.count) * Math.PI * 2
+        const x2 = Math.cos(angle2) * nextRing.radius
+        const z2 = Math.sin(angle2) * nextRing.radius
+        
+        connections.push(
+          <Line
+            key={`ring-${ringIndex}-${i}`}
+            points={[[x1, 0, z1], [x2, 0, z2]]}
+            color="#00ffff"
+            lineWidth={0.5}
+            transparent
+            opacity={0.4}
+          />
+        )
+      }
+    }
+  })
+  
+  return (
+    <group ref={groupRef} position={[0, -10, 0]}>
+      {nodes}
+      {connections}
+      
+      {/* Center node */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.5} />
+      </mesh>
+      
+      {/* Title */}
+      <Text
+        position={[0, -35, 0]}
+        fontSize={2}
+        color="#00ff88"
+        anchorX="center"
+        anchorY="middle"
+      >
+        Small World Network
+      </Text>
+    </group>
+  )
+}
+
 function MeshNetwork() {
   const txRef = useRef<THREE.Mesh>(null)
   
@@ -301,7 +435,7 @@ function MeshNetwork() {
   })
   
   return (
-    <group position={[0, -24.5, 0]}> {/* Position just above the pie chart */}
+    <group position={[0, -24.9, 0]}> {/* Position touching the pie chart */}
       
       {/* Create a simple mesh network grid */}
       {(() => {
@@ -350,12 +484,12 @@ function MeshNetwork() {
           for (let j = 0; j < gridSize; j++) {
             const x = -extent + i * spacing;
             const z = -extent + j * spacing;
-            // Make two specific nodes white for transaction visualization
+            // Make two specific nodes yellow for transaction visualization
             const isSpecialNode = (i === 5 && j === 8) || (i === 18 && j === 16);
             nodes.push(
               <mesh key={`node-${i}-${j}`} position={[x, 0, z]}>
                 <sphereGeometry args={[isSpecialNode ? 0.5 : 0.2, 8, 8]} />
-                <meshBasicMaterial color={isSpecialNode ? "#ffffff" : "#000000"} />
+                <meshBasicMaterial color={isSpecialNode ? "#ffff00" : "#000000"} />
               </mesh>
             );
           }
@@ -377,6 +511,32 @@ function MeshNetwork() {
         <sphereGeometry args={[0.4, 16, 16]} />
         <meshStandardMaterial color="#ffff00" emissive="#ffff00" emissiveIntensity={0.5} />
       </mesh>
+      
+      {/* Alice label */}
+      <Text
+        position={[node1Pos[0], node1Pos[1] + 2, node1Pos[2]]}
+        fontSize={2}
+        color="#ffff00"
+        anchorX="center"
+        anchorY="bottom"
+        outlineWidth={0.1}
+        outlineColor="#000000"
+      >
+        Alice
+      </Text>
+      
+      {/* Bob label */}
+      <Text
+        position={[node2Pos[0], node2Pos[1] + 2, node2Pos[2]]}
+        fontSize={2}
+        color="#ffff00"
+        anchorX="center"
+        anchorY="bottom"
+        outlineWidth={0.1}
+        outlineColor="#000000"
+      >
+        Bob
+      </Text>
     </group>
   );
 }
@@ -593,7 +753,7 @@ function BlockchainBlocks({ viewMode }: { viewMode: string }) {
             anchorY="middle"
             rotation={[0, 0, 0]}  // Keep text facing forward
           >
-            {viewMode === 'multi' ? '1MB BLOCKS' : 'Variable Blocksize'}
+            {viewMode === 'multi' ? '1MB BLOCKS' : viewMode === 'play' ? '1MB Blocks' : 'Variable Blocksize'}
           </Text>
         );
       })()}
@@ -603,7 +763,7 @@ function BlockchainBlocks({ viewMode }: { viewMode: string }) {
 
 export default function BlockchainVisualizer() {
   const controlsRef = useRef<OrbitControlsType | null>(null)
-  const [viewMode, setViewMode] = React.useState<'single' | 'multi' | 'play'>('single')
+  const [viewMode, setViewMode] = React.useState<'single' | 'multi' | 'play' | 'smallworld'>('single')
 
   const resetView = () => {
     if (controlsRef.current) {
@@ -629,11 +789,11 @@ export default function BlockchainVisualizer() {
         {viewMode === 'multi' && <BlockchainBlocks viewMode={viewMode} />}
         {viewMode === 'play' && (
           <>
-            <BlockchainBlocks viewMode={viewMode} />
             <MultiChainBlocks />
             <MeshNetwork />
           </>
         )}
+        {viewMode === 'smallworld' && <SmallWorldMandala />}
         <OrbitControls
           ref={controlsRef}
           enableDamping
@@ -664,12 +824,122 @@ export default function BlockchainVisualizer() {
         {/* Total Hash Rate */}
         <div className="mb-3 p-2 bg-blue-900/30 rounded border border-blue-500/20">
           <div className="text-cyan-400 font-bold text-sm">🌐 TOTAL NETWORK</div>
-          <div className="text-yellow-400 text-lg font-bold">~680 EH/s</div>
+          <div className="text-yellow-400 text-lg font-bold">{viewMode === 'single' ? '~2.5 EH/s' : '~680 EH/s'}</div>
         </div>
 
         {/* All Pools - sized proportionally with harmonious colors */}
         <div className="space-y-1">
-          {/* AntPool - Largest */}
+          {viewMode === 'single' ? (
+            <>
+              {/* BSV Pools */}
+              {/* TAAL - Largest BSV miner */}
+              <div className="p-3 rounded" style={{ backgroundColor: 'rgba(255, 0, 0, 0.2)', borderLeft: '4px solid #FF0000' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-lg" style={{ color: '#FF0000' }}>TAAL</span>
+                  <span className="text-white font-bold text-lg">25.0%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~625 PH/s</div>
+              </div>
+
+              {/* GorillaPool */}
+              <div className="p-2.5 rounded" style={{ backgroundColor: 'rgba(255, 51, 0, 0.2)', borderLeft: '4px solid #FF3300' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-base" style={{ color: '#FF3300' }}>GorillaPool</span>
+                  <span className="text-white font-bold text-base">20.0%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~500 PH/s</div>
+              </div>
+
+              {/* SVPool */}
+              <div className="p-2.5 rounded" style={{ backgroundColor: 'rgba(255, 102, 0, 0.2)', borderLeft: '4px solid #FF6600' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-base" style={{ color: '#FF6600' }}>SVPool</span>
+                  <span className="text-white font-bold text-base">15.0%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~375 PH/s</div>
+              </div>
+
+              {/* WhatsOnChain */}
+              <div className="p-2 rounded" style={{ backgroundColor: 'rgba(255, 153, 0, 0.2)', borderLeft: '4px solid #FF9900' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold" style={{ color: '#FF9900' }}>WhatsOnChain</span>
+                  <span className="text-white font-bold">8.0%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~200 PH/s</div>
+              </div>
+
+              {/* ViaBTC BSV */}
+              <div className="p-2 rounded" style={{ backgroundColor: 'rgba(255, 204, 0, 0.2)', borderLeft: '4px solid #FFCC00' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold" style={{ color: '#FFCC00' }}>ViaBTC BSV</span>
+                  <span className="text-white font-bold">7.0%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~175 PH/s</div>
+              </div>
+
+              {/* Mempool */}
+              <div className="p-1.5 rounded" style={{ backgroundColor: 'rgba(255, 255, 0, 0.2)', borderLeft: '4px solid #FFFF00' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-sm" style={{ color: '#FFFF00' }}>Mempool</span>
+                  <span className="text-white font-bold text-sm">5.0%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~125 PH/s</div>
+              </div>
+
+              {/* MARAPool */}
+              <div className="p-1.5 rounded" style={{ backgroundColor: 'rgba(204, 255, 0, 0.2)', borderLeft: '4px solid #CCFF00' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-sm" style={{ color: '#CCFF00' }}>MARAPool</span>
+                  <span className="text-white font-bold text-sm">4.5%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~112 PH/s</div>
+              </div>
+
+              {/* SBI Mining */}
+              <div className="p-1.5 rounded" style={{ backgroundColor: 'rgba(153, 255, 0, 0.2)', borderLeft: '4px solid #99FF00' }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-sm" style={{ color: '#99FF00' }}>SBI Mining</span>
+                  <span className="text-white font-bold text-sm">3.5%</span>
+                </div>
+                <div className="text-gray-300 text-xs">~87 PH/s</div>
+              </div>
+
+              {/* Unknown */}
+              <div className="p-1 rounded" style={{ backgroundColor: 'rgba(102, 255, 0, 0.2)', borderLeft: '3px solid #66FF00' }}>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm" style={{ color: '#66FF00' }}>Unknown</span>
+                  <span className="text-white text-sm">3.0%</span>
+                </div>
+              </div>
+
+              {/* Solo Miners */}
+              <div className="p-1 rounded" style={{ backgroundColor: 'rgba(51, 255, 0, 0.2)', borderLeft: '3px solid #33FF00' }}>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm" style={{ color: '#33FF00' }}>Solo Miners</span>
+                  <span className="text-white text-sm">2.5%</span>
+                </div>
+              </div>
+
+              {/* BSV Pool */}
+              <div className="p-1 rounded" style={{ backgroundColor: 'rgba(0, 255, 0, 0.2)', borderLeft: '3px solid #00FF00' }}>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm" style={{ color: '#00FF00' }}>BSV Pool</span>
+                  <span className="text-white text-sm">2.0%</span>
+                </div>
+              </div>
+
+              {/* Other Nodes */}
+              <div className="p-1 rounded" style={{ backgroundColor: 'rgba(0, 255, 51, 0.2)', borderLeft: '3px solid #00FF33' }}>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm" style={{ color: '#00FF33' }}>Other Nodes</span>
+                  <span className="text-white text-sm">4.5%</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* BTC Pools */}
+              {/* AntPool - Largest */}
           <div className="p-3 rounded" style={{ backgroundColor: 'rgba(255, 0, 0, 0.2)', borderLeft: '4px solid #FF0000' }}>
             <div className="flex justify-between items-center">
               <span className="font-bold text-lg" style={{ color: '#FF0000' }}>AntPool</span>
@@ -789,13 +1059,15 @@ export default function BlockchainVisualizer() {
             </div>
           </div>
 
-          {/* Remaining small pools */}
-          <div className="p-0.5 rounded" style={{ backgroundColor: 'rgba(51, 0, 255, 0.1)', borderLeft: '2px solid #3300FF' }}>
-            <div className="flex justify-between items-center">
-              <span className="text-xs" style={{ color: '#3300FF' }}>Others (7 pools)</span>
-              <span className="text-white text-xs">6.5%</span>
-            </div>
-          </div>
+              {/* Remaining small pools */}
+              <div className="p-0.5 rounded" style={{ backgroundColor: 'rgba(51, 0, 255, 0.1)', borderLeft: '2px solid #3300FF' }}>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs" style={{ color: '#3300FF' }}>Others (7 pools)</span>
+                  <span className="text-white text-xs">6.5%</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
       </div>
