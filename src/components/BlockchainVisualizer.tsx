@@ -281,8 +281,8 @@ function SmallWorldMandala() {
     }
   })
   
-  const nodes = []
-  const connections = []
+  const nodes: React.ReactNode[] = []
+  const connections: React.ReactNode[] = []
   
   // Create mandala pattern with multiple rings
   const rings = [
